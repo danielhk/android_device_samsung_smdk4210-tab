@@ -34,6 +34,14 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/etc/vold.fstab:system/etc/vold.fstab
 
+# bluez support files
+PRODUCT_COPY_FILES += \
+        system/bluetooth/data/audio.conf:system/etc/bluetooth/audio.conf \
+        system/bluetooth/data/auto_pairing.conf:system/etc/bluetooth/auto_pairing.conf \
+        system/bluetooth/data/blacklist.conf:system/etc/bluetooth/blacklist.conf \
+        system/bluetooth/data/input.conf:system/etc/bluetooth/input.conf \
+        system/bluetooth/data/network.conf:system/etc/bluetooth/network.conf
+
 # Bluetooth configuration file
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/etc/PSConfig_8811.psr:system/etc/PSConfig_8811.psr

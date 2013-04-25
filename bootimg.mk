@@ -20,6 +20,7 @@ recovery_uncompressed_ramdisk ?= $(PRODUCT_OUT)/ramdisk-recovery.cpio
 
 $(INSTALLED_BOOTIMAGE_TARGET): $(INSTALLED_KERNEL_TARGET) $(INTERNAL_RAMDISK_FILES) $(SELINUX_DEPENDS)
 	$(call pretty,"Target boot image: $@")
+	@chmod 0644 $(TARGET_ROOT_OUT)/*.*
 	$(MAKE) -C $(KERNEL_SRC) O=$(KERNEL_OUT) ARCH=$(TARGET_ARCH) $(ARM_CROSS_COMPILE) CONFIG_INITRAMFS_SOURCE=$(TARGET_ROOT_OUT) $(TARGET_PREBUILT_INT_KERNEL_TYPE)
 	$(ACP) $(KERNEL_BIN) $@
 	@echo -e ${CL_INS}"Made boot image: $@"${CL_RST}

@@ -185,6 +185,7 @@ int audio_ril_interface_set_route(struct tinyalsa_audio_ril_interface *ril_inter
 		case AUDIO_DEVICE_OUT_BLUETOOTH_SCO_HEADSET:
 		case AUDIO_DEVICE_OUT_BLUETOOTH_SCO_CARKIT:
 			path = SOUND_AUDIO_PATH_BLUETOOTH;
+			break;
 		case AUDIO_DEVICE_OUT_BLUETOOTH_A2DP:
 		case AUDIO_DEVICE_OUT_BLUETOOTH_A2DP_HEADPHONES:
 		case AUDIO_DEVICE_OUT_BLUETOOTH_A2DP_SPEAKER:
