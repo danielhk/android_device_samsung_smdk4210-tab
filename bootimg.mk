@@ -18,8 +18,10 @@ INSTALLED_BOOTIMAGE_TARGET ?= $(PRODUCT_OUT)/boot.img
 INSTALLED_RECOVERYIMAGE_TARGET ?= $(PRODUCT_OUT)/recovery.img
 recovery_uncompressed_ramdisk ?= $(PRODUCT_OUT)/ramdisk-recovery.cpio
 
+
 $(INSTALLED_BOOTIMAGE_TARGET): $(INSTALLED_KERNEL_TARGET) $(INTERNAL_RAMDISK_FILES) $(SELINUX_DEPENDS)
 	$(call pretty,"Target boot image: $@")
+# daniel, may add the whole directory here
 	@chmod 0644 $(TARGET_ROOT_OUT)/*.*
 	$(MAKE) -C $(KERNEL_SRC) O=$(KERNEL_OUT) ARCH=$(TARGET_ARCH) $(ARM_CROSS_COMPILE) CONFIG_INITRAMFS_SOURCE=$(TARGET_ROOT_OUT) $(TARGET_PREBUILT_INT_KERNEL_TYPE)
 	$(ACP) $(KERNEL_BIN) $@

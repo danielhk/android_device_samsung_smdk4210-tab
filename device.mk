@@ -34,7 +34,7 @@ PRODUCT_COPY_FILES += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/etc/vold.fstab:system/etc/vold.fstab
 
-# bluez support files
+# @daniel added, bluez from cm10 /build, audio seems no use...
 PRODUCT_COPY_FILES += \
         system/bluetooth/data/audio.conf:system/etc/bluetooth/audio.conf \
         system/bluetooth/data/auto_pairing.conf:system/etc/bluetooth/auto_pairing.conf \
@@ -52,7 +52,7 @@ PRODUCT_COPY_FILES += \
 
 PRODUCT_PROPERTY_OVERRIDES += \
     wifi.interface=wlan0 \
-    wifi.supplicant_scan_interval=45
+    wifi.supplicant_scan_interval=80
 
 # Packages
 PRODUCT_PACKAGES += \
@@ -73,11 +73,12 @@ PRODUCT_PACKAGES += \
 	gralloc.exynos4 \
 	hwcomposer.exynos4 \
 	lights.exynos4 \
+	sensors.exynos4 \
 	libaudiohw_legacy \
 	libhwconverter \
 	libnetcmdiface \
 	libs5pjpeg \
-	libfimg
+	libfimg 
 
 # Charger
 PRODUCT_PACKAGES += \

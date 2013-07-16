@@ -46,8 +46,8 @@ TARGET_SPECIFIC_HEADER_PATH += device/samsung/smdk4210-tab/overlay/include
 TARGET_PROVIDES_INIT := true
 TARGET_PROVIDES_INIT_TARGET_RC := true
 
-# Kernel
-TARGET_KERNEL_SOURCE := kernel/samsung/smdk4210
+# Kernel  @daniel change to 4412
+TARGET_KERNEL_SOURCE := kernel/samsung/smdk4412
 TARGET_KERNEL_MODULES := CLEAN_MODULES
 BOARD_KERNEL_BASE := 0x40000000
 BOARD_KERNEL_PAGESIZE := 4096
@@ -118,14 +118,23 @@ BOARD_WLAN_DEVICE                := ath6kl
 WPA_SUPPLICANT_VERSION           := VER_0_8_X
 BOARD_WPA_SUPPLICANT_DRIVER      := NL80211
 BOARD_WPA_SUPPLICANT_PRIVATE_LIB := lib_driver_cmd_ath6kl
+BOARD_HOSTAPD_DRIVER             := NL80211
+BOARD_HOSTAPD_PRIVATE_LIB        := lib_driver_cmd_ath6kl
 WIFI_DRIVER_MODULE_PATH          := "/system/lib/modules/ath6kl.ko"
 WIFI_DRIVER_MODULE_NAME          := ath6kl
 WIFI_DRIVER_LOADER_DELAY         := 1000000
 BOARD_HAVE_SAMSUNG_WIFI          := true
+# no firmware
+WIFI_FIRMWARE_LOADER 		:= ""
+WIFI_DRIVER_FW_PATH_STA 	:= ""
+WIFI_DRIVER_FW_PATH_AP 		:= ""
+WIFI_DRIVER_FW_PATH_P2P 	:= ""
+WIFI_DRIVER_FW_PATH_PARAM 	:= ""
 
 # Charging Mode (LPM)
 BOARD_CHARGING_MODE_BOOTING_LPM := "/sys/class/power_supply/battery/batt_lp_charging"
 BOARD_BATTERY_DEVICE_NAME := "battery"
+BOARD_CHARGER_RES := device/samsung/smdk4210-tab/charger_res/images
 
 # Recovery
 TARGET_RECOVERY_INITRC := device/samsung/smdk4210-tab/recovery.rc
@@ -142,8 +151,21 @@ BOARD_HAS_NO_SELECT_BUTTON := true
 # from kernels that still have MMC_CAP_ERASE enabled.
 BOARD_SUPPRESS_EMMC_WIPE := true
 
+# for TWRP
+DEVICE_RESOLUTION := 1280x800
+BOARD_HAS_NO_REAL_SDCARD := true
+RECOVERY_SDCARD_ON_DATA := true
+TW_NO_USB_STORAGE := true
+#TW_INTERNAL_STORAGE_PATH := "/data/media"
+#TW_INTERNAL_STORAGE_MOUNT_POINT := "data"
+TW_EXTERNAL_STORAGE_PATH := "/external_sd"
+TW_EXTERNAL_STORAGE_MOUNT_POINT := "external_sd"
+SP1_NAME := "efs"
+SP2_NAME := "preload"
+
 # Releasetools
 # TODO: use standard BOOTIMG_MK
 BOARD_CUSTOM_BOOTIMG_MK := device/samsung/smdk4210-tab/bootimg.mk
 TARGET_RELEASETOOL_OTA_FROM_TARGET_SCRIPT := ./device/samsung/smdk4210-tab/releasetools/ota_from_target_files
 TARGET_RELEASETOOL_IMG_FROM_TARGET_SCRIPT := ./device/samsung/smdk4210-tab/releasetools/img_from_target_files
+

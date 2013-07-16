@@ -6,6 +6,10 @@ on boot
     class_start default
 
 service ueventd /sbin/ueventd
+    class core
     critical
 
 service charger /charger
+    class default
+    user root
+

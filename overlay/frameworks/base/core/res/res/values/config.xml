@@ -46,12 +46,14 @@
 
          Must be overridden in platform specific overlays -->
     <!-- The smdk4210-tab light sensor hal reports 0,7,70,700,7000,16000,
-         and the stock brightness levels are as follows: -->
+         and the stock brightness levels are as follows: 
+	@daniel changed, added one more item-->
     <integer-array name="config_autoBrightnessLevels">
         <item>15</item>
-        <item>150</item>
-        <item>1500</item>
-        <item>15000</item>
+        <item>140</item>
+        <item>800</item>
+        <item>2400</item>
+        <item>12000</item>
     </integer-array>
 
     <!-- Array of output values for button backlight corresponding to the LUX values
@@ -59,6 +61,7 @@
          than the size of the config_autoBrightnessLevels array.
     -->
     <integer-array name="config_autoBrightnessButtonBacklightValues">
+        <item>0</item>
         <item>0</item>
         <item>0</item>
         <item>0</item>
@@ -77,6 +80,7 @@
         <item>0</item>
         <item>0</item>
         <item>0</item>
+        <item>0</item>
     </integer-array>
 
     <!-- List of regexpressions describing the interface (if any) that represent tetherable
@@ -90,6 +94,7 @@
          Wifi interfaces.  If the device doesn't want to support tethering over Wifi this
          should be empty.  An example would be "softap.*" -->
     <string-array translatable="false" name="config_tether_wifi_regexs">
+        <item>"wlan0"</item>
     </string-array>
 
     <!-- List of regexpressions describing the interface (if any) that represent tetherable
