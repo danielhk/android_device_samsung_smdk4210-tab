@@ -8,8 +8,6 @@ on init
     export ANDROID_CACHE     /cache
     export EXTERNAL_STORAGE  /external_sd
     export SECONDARY_STORAGE /sdcard
-# TWRP
-    export LD_LIBRARY_PATH   /sbin
 
     symlink /system/etc /etc
 
