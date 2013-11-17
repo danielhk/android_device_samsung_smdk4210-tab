@@ -24,23 +24,23 @@ PRODUCT_LOCALES += mdpi tvdpi hdpi
 
 # Init files
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/init.smdk4210.rc:root/init.smdk4210.rc \
-    $(LOCAL_PATH)/init.smdk4210.usb.rc:root/init.smdk4210.usb.rc \
-    $(LOCAL_PATH)/lpm.rc:root/lpm.rc \
-    $(LOCAL_PATH)/fstab.smdk4210:root/fstab.smdk4210 \
-    $(LOCAL_PATH)/ueventd.smdk4210.rc:root/ueventd.smdk4210.rc
+    $(LOCAL_PATH)/rootdir/init.smdk4210.rc:root/init.smdk4210.rc \
+    $(LOCAL_PATH)/rootdir/init.smdk4210.usb.rc:root/init.smdk4210.usb.rc \
+    $(LOCAL_PATH)/rootdir/lpm.rc:root/lpm.rc \
+    $(LOCAL_PATH)/rootdir/fstab.smdk4210:root/fstab.smdk4210 \
+    $(LOCAL_PATH)/rootdir/ueventd.smdk4210.rc:root/ueventd.smdk4210.rc
 
-# Vold and Storage
+# recovery rc
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/etc/vold.fstab:system/etc/vold.fstab
+    $(LOCAL_PATH)/rootdir/init.recovery.smdk4210.rc:root/init.recovery.smdk4210.rc
 
 # @daniel added, bluez from cm10 /build, audio seems no use...
-PRODUCT_COPY_FILES += \
-        system/bluetooth/data/audio.conf:system/etc/bluetooth/audio.conf \
-        system/bluetooth/data/auto_pairing.conf:system/etc/bluetooth/auto_pairing.conf \
-        system/bluetooth/data/blacklist.conf:system/etc/bluetooth/blacklist.conf \
-        system/bluetooth/data/input.conf:system/etc/bluetooth/input.conf \
-        system/bluetooth/data/network.conf:system/etc/bluetooth/network.conf
+#PRODUCT_COPY_FILES += \
+#        system/bluetooth/data/audio.conf:system/etc/bluetooth/audio.conf \
+#        system/bluetooth/data/auto_pairing.conf:system/etc/bluetooth/auto_pairing.conf \
+#        system/bluetooth/data/blacklist.conf:system/etc/bluetooth/blacklist.conf \
+#        system/bluetooth/data/input.conf:system/etc/bluetooth/input.conf \
+#        system/bluetooth/data/network.conf:system/etc/bluetooth/network.conf
 
 # Bluetooth configuration file
 PRODUCT_COPY_FILES += \
@@ -54,31 +54,36 @@ PRODUCT_PROPERTY_OVERRIDES += \
     wifi.interface=wlan0 \
     wifi.supplicant_scan_interval=80
 
+# Netflix hack
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/etc/98netflix:system/etc/init.d/98netflix
+
+
 # Packages
 PRODUCT_PACKAGES += \
-    libsurfaceflinger_client \
     com.android.future.usb.accessory \
     librs_jni \
+    libsurfaceflinger_client \
     Torch \
     macloader \
-    bccmd \
-    Smdk4210TabSettings
+    bccmd
+#    Smdk4210TabSettings
 
 # HAL
 PRODUCT_PACKAGES += \
 	audio.a2dp.default \
 	audio.primary.exynos4 \
 	audio.usb.default \
-	camera.exynos4 \
+	camera.smdk4210 \
 	gralloc.exynos4 \
 	hwcomposer.exynos4 \
 	lights.exynos4 \
 	sensors.exynos4 \
-	libaudiohw_legacy \
 	libhwconverter \
-	libnetcmdiface \
 	libs5pjpeg \
-	libfimg 
+	libfimg \
+	libnetcmdiface
+#	libaudiohw_legacy \
 
 # Charger
 PRODUCT_PACKAGES += \
@@ -125,7 +130,7 @@ PRODUCT_COPY_FILES += \
 	frameworks/native/data/etc/android.hardware.sensor.gyroscope.xml:system/etc/permissions/android.hardware.sensor.gyroscope.xml \
 	frameworks/native/data/etc/android.hardware.sensor.accelerometer.xml:system/etc/permissions/android.hardware.sensor.accelerometer.xml \
 	frameworks/native/data/etc/android.hardware.touchscreen.multitouch.jazzhand.xml:system/etc/permissions/android.hardware.touchscreen.multitouch.jazzhand.xml \
-	frameworks/native/data/etc/android.software.sip.voip.xml:system/etc/permissions/android.software.sip.voip.xml \
+	frameworks/native/data/etc/android.soft0ware.sip.voip.xml:system/etc/permissions/android.software.sip.voip.xml \
 	frameworks/native/data/etc/android.hardware.usb.accessory.xml:system/etc/permissions/android.hardware.usb.accessory.xml \
 	frameworks/native/data/etc/android.hardware.usb.host.xml:system/etc/permissions/android.hardware.usb.host.xml \
 	frameworks/native/data/etc/tablet_core_hardware.xml:system/etc/permissions/tablet_core_hardware.xml
@@ -139,8 +144,11 @@ PRODUCT_PACKAGES += \
 
 PRODUCT_CHARACTERISTICS := tablet
 
+# Graphics
 PRODUCT_PROPERTY_OVERRIDES += \
+    ro.zygote.disable_gl_preload=1 \
     ro.opengles.version=131072 \
+    ro.bq.gpu_to_cpu_unsupported=1 \
     hwui.render_dirty_regions=false
 
 PRODUCT_TAGS += dalvik.gc.type-precise

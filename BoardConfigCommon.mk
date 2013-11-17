@@ -20,8 +20,10 @@ TARGET_CPU_ABI2 := armeabi
 TARGET_CPU_SMP := true
 TARGET_CPU_VARIANT := cortex-a9
 TARGET_ARCH_VARIANT := armv7-a-neon
+TARGET_ARCH_VARIANT_CPU := cortex-a9
 TARGET_ARCH_VARIANT_FPU := neon
 ARCH_ARM_HAVE_TLS_REGISTER := true
+ARCH_ARM_HAVE_NEON := true
 
 TARGET_BOARD_PLATFORM := exynos4
 TARGET_FAMILY := smdk4210-tab
@@ -71,10 +73,16 @@ BOARD_VOLD_EMMC_SHARES_DEV_MAJOR := true
 BOARD_VOLD_DISC_HAS_MULTIPLE_MAJORS := true
 TARGET_USE_CUSTOM_LUN_FILE_PATH := "/sys/devices/platform/s3c-usbgadget/gadget/lun%d/file"
 
+# Hardware tunables
+BOARD_HARDWARE_CLASS := hardware/samsung/cmhw
+
 # Graphics
 BOARD_EGL_CFG := device/samsung/smdk4210-tab/configs/egl.cfg
 BOARD_EGL_NEEDS_LEGACY_FB := true
 USE_OPENGL_RENDERER := true
+#TAGET_RUNNING_WITHOUT_SYNC_FRAMEWORK := true
+
+# Enable WEBGL in WebKit
 ENABLE_WEBGL := true
 
 # Boot Animation
@@ -84,10 +92,13 @@ TARGET_BOOTANIMATION_TEXTURE_CACHE := true
 # HWComposer
 BOARD_USES_HWCOMPOSER := true
 BOARD_USE_SYSFS_VSYNC_NOTIFICATION := true
+
+# FIMG Acceleration
 BOARD_USES_FIMGAPI := true
+BOARD_USES_SKIA_FIMGAPI := true
 
 # TVOut
-#BOARD_USE_SECTVOUT := true
+BOARD_USE_SECTVOUT := true
 BOARD_USES_SKTEXTBOX := true
 
 # OMX
@@ -101,6 +112,10 @@ BOARD_USES_MFC_FPS := true
 BOARD_USES_GENERIC_AUDIO := false
 BOARD_USE_TINYALSA_AUDIO := true
 BOARD_USE_YAMAHA_MC1N2_AUDIO := true
+
+# RIL
+BOARD_PROVIDES_LIBRIL := true
+BOARD_MODEM_TYPE := xmm6260
 
 # Camera
 BOARD_USES_PROPRIETARY_LIBCAMERA := true
@@ -119,27 +134,39 @@ BOARD_WLAN_DEVICE                := ath6kl
 WPA_SUPPLICANT_VERSION           := VER_0_8_X
 BOARD_WPA_SUPPLICANT_DRIVER      := NL80211
 BOARD_WPA_SUPPLICANT_PRIVATE_LIB := lib_driver_cmd_ath6kl
-BOARD_HOSTAPD_DRIVER             := NL80211
-BOARD_HOSTAPD_PRIVATE_LIB        := lib_driver_cmd_ath6kl
+#BOARD_HOSTAPD_DRIVER             := NL80211
+#BOARD_HOSTAPD_PRIVATE_LIB        := lib_driver_cmd_ath6kl
 WIFI_DRIVER_MODULE_PATH          := "/system/lib/modules/ath6kl.ko"
-WIFI_DRIVER_MODULE_NAME          := ath6kl
+WIFI_DRIVER_MODULE_NAME          := "ath6kl"
 WIFI_DRIVER_LOADER_DELAY         := 1000000
 BOARD_HAVE_SAMSUNG_WIFI          := true
 # no firmware
-WIFI_FIRMWARE_LOADER 		:= ""
-WIFI_DRIVER_FW_PATH_STA 	:= ""
-WIFI_DRIVER_FW_PATH_AP 		:= ""
-WIFI_DRIVER_FW_PATH_P2P 	:= ""
-WIFI_DRIVER_FW_PATH_PARAM 	:= ""
+#WIFI_FIRMWARE_LOADER 		:= ""
+#WIFI_DRIVER_FW_PATH_STA 	:= ""
+#WIFI_DRIVER_FW_PATH_AP 		:= ""
+#WIFI_DRIVER_FW_PATH_P2P 	:= ""
+#WIFI_DRIVER_FW_PATH_PARAM 	:= ""
+
+# Sepolicy
+BOARD_SEPOLICY_DIRS += \
+    device/samsung/smdk4210-tab/sepolicy
+
+BOARD_SEPOLICY_UNION += \
+    device.te \
+    domain.te \
+    file.te \
+    file_contexts \
+    rild.te \
+    wpa_supplicant.te \
 
 # Charging Mode (LPM)
 BOARD_CHARGING_MODE_BOOTING_LPM := "/sys/class/power_supply/battery/batt_lp_charging"
 BOARD_BATTERY_DEVICE_NAME := "battery"
-BOARD_CHARGER_RES := device/samsung/smdk4210-tab/charger_res/images
+BOARD_CHARGER_RES := "device/samsung/smdk4210-tab/charger_res/images"
 
 # Recovery
-TARGET_RECOVERY_INITRC := device/samsung/smdk4210-tab/recovery.rc
-BOARD_UMS_LUNFILE := "/sys/class/android_usb/android0/f_mass_storage/lun/file"
+BOARD_CUSTOM_GRAPHICS := ../../../device/samsung/smdk4210-tab/recovery/graphics.c
+BOARD_UMS_LUNFILE := "/sys/class/android_usb/android0/f_mass_storage/lun0/file"
 TARGET_RECOVERY_PIXEL_FORMAT := "BGRA_8888"
 BOARD_USE_CUSTOM_RECOVERY_FONT := \"roboto_15x24.h\"
 BOARD_USES_MMCUTILS := true
@@ -151,6 +178,9 @@ BOARD_HAS_NO_SELECT_BUTTON := true
 # disabled for mshci.c, however it makes nightly ZIPs safer to flash
 # from kernels that still have MMC_CAP_ERASE enabled.
 BOARD_SUPPRESS_EMMC_WIPE := true
+
+TARGET_RECOVERY_FSTAB := device/samsung/smdk4210-tab/rootdir/fstab.smdk4210
+RECOVERY_FSTAB_VERSION := 2 
 
 # for TWRP
 DEVICE_RESOLUTION := 1280x800
