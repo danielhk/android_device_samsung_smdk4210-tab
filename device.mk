@@ -42,6 +42,11 @@ PRODUCT_COPY_FILES += \
 #        system/bluetooth/data/input.conf:system/etc/bluetooth/input.conf \
 #        system/bluetooth/data/network.conf:system/etc/bluetooth/network.conf
 
+# Audio @daniel, move here
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/etc/tinyalsa-audio.xml:system/etc/tinyalsa-audio.xml \
+    $(LOCAL_PATH)/configs/etc/audio_policy.conf:system/etc/audio_policy.conf
+
 # Bluetooth configuration file
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/etc/PSConfig_8811.psr:system/etc/PSConfig_8811.psr
@@ -63,10 +68,11 @@ PRODUCT_COPY_FILES += \
 PRODUCT_PACKAGES += \
     com.android.future.usb.accessory \
     librs_jni \
-    libsurfaceflinger_client \
     Torch \
     macloader \
     bccmd
+#    libsurfaceflinger_client \
+#    AdvancedDisplay \
 #    Smdk4210TabSettings
 
 # HAL
@@ -83,6 +89,7 @@ PRODUCT_PACKAGES += \
 	libs5pjpeg \
 	libfimg \
 	libnetcmdiface
+#	memtrack.exynos4 \
 #	libaudiohw_legacy \
 
 # Charger

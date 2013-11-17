@@ -20,7 +20,6 @@ TARGET_CPU_ABI2 := armeabi
 TARGET_CPU_SMP := true
 TARGET_CPU_VARIANT := cortex-a9
 TARGET_ARCH_VARIANT := armv7-a-neon
-TARGET_ARCH_VARIANT_CPU := cortex-a9
 TARGET_ARCH_VARIANT_FPU := neon
 ARCH_ARM_HAVE_TLS_REGISTER := true
 ARCH_ARM_HAVE_NEON := true
@@ -49,8 +48,11 @@ TARGET_SPECIFIC_HEADER_PATH += device/samsung/smdk4210-tab/overlay/include
 TARGET_PROVIDES_INIT := true
 TARGET_PROVIDES_INIT_TARGET_RC := true
 
-# Kernel
+# Kernel  @daniel change to 4412
 TARGET_KERNEL_SOURCE := kernel/samsung/smdk4210
+#TARGET_KERNEL_SOURCE := kernel/samsung/smdk4210-cm10
+#TARGET_KERNEL_SOURCE := kernel/samsung/smdk4412
+#TARGET_KERNEL_SOURCE := kernel/samsung/4210-3.4
 TARGET_KERNEL_MODULES := CLEAN_MODULES
 BOARD_KERNEL_BASE := 0x40000000
 BOARD_KERNEL_PAGESIZE := 4096
@@ -80,14 +82,16 @@ BOARD_HARDWARE_CLASS := hardware/samsung/cmhw
 BOARD_EGL_CFG := device/samsung/smdk4210-tab/configs/egl.cfg
 BOARD_EGL_NEEDS_LEGACY_FB := true
 USE_OPENGL_RENDERER := true
-#TAGET_RUNNING_WITHOUT_SYNC_FRAMEWORK := true
+TAGET_RUNNING_WITHOUT_SYNC_FRAMEWORK := true
+# from i9300
+#COMMON_GLOBAL_CFLAGS += -DSEC_HWJPEG_G2D -DFORCE_SCREENSHOT_CPU_PATH #-DWORKAROUND_BUG_10194508
 
 # Enable WEBGL in WebKit
 ENABLE_WEBGL := true
 
 # Boot Animation
 TARGET_BOOTANIMATION_PRELOAD := true
-TARGET_BOOTANIMATION_TEXTURE_CACHE := true
+#TARGET_BOOTANIMATION_TEXTURE_CACHE := true
 
 # HWComposer
 BOARD_USES_HWCOMPOSER := true
@@ -166,6 +170,7 @@ BOARD_CHARGER_RES := "device/samsung/smdk4210-tab/charger_res/images"
 
 # Recovery
 BOARD_CUSTOM_GRAPHICS := ../../../device/samsung/smdk4210-tab/recovery/graphics.c
+#TARGET_RECOVERY_INITRC := device/samsung/smdk4210-tab/recovery.rc
 BOARD_UMS_LUNFILE := "/sys/class/android_usb/android0/f_mass_storage/lun0/file"
 TARGET_RECOVERY_PIXEL_FORMAT := "BGRA_8888"
 BOARD_USE_CUSTOM_RECOVERY_FONT := \"roboto_15x24.h\"
@@ -187,6 +192,8 @@ DEVICE_RESOLUTION := 1280x800
 BOARD_HAS_NO_REAL_SDCARD := true
 RECOVERY_SDCARD_ON_DATA := true
 TW_NO_USB_STORAGE := true
+#TW_INTERNAL_STORAGE_PATH := "/data/media"
+#TW_INTERNAL_STORAGE_MOUNT_POINT := "data"
 TW_EXTERNAL_STORAGE_PATH := "/external_sd"
 TW_EXTERNAL_STORAGE_MOUNT_POINT := "external_sd"
 SP1_NAME := "efs"
