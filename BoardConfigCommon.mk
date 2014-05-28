@@ -126,7 +126,6 @@ COMMON_GLOBAL_CFLAGS += -DSAMSUNG_CAMERA_HARDWARE
 # Bluetooth
 BOARD_HAVE_BLUETOOTH := true
 BOARD_HAVE_BLUETOOTH_CSR := true
-TARGET_CUSTOM_BLUEDROID := ../../../device/samsung/smdk4210-tab/bluetooth.c
 
 # Wifi
 BOARD_WLAN_DEVICE                := ath6kl

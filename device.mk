@@ -22,9 +22,10 @@ $(call inherit-product-if-exists, vendor/samsung/smdk4210-tab/vendor.mk)
 PRODUCT_AAPT_CONFIG := normal large xlarge mdpi tvdpi hdpi
 PRODUCT_LOCALES += mdpi tvdpi hdpi
 
-# Init files
+# rootdir files
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/rootdir/init.smdk4210.rc:root/init.smdk4210.rc \
+    $(LOCAL_PATH)/rootdir/init.smdk4210.bt.rc:root/init.smdk4210.bt.rc \
     $(LOCAL_PATH)/rootdir/init.smdk4210.gps.rc:root/init.smdk4210.gps.rc \
     $(LOCAL_PATH)/rootdir/init.smdk4210.usb.rc:root/init.smdk4210.usb.rc \
     $(LOCAL_PATH)/rootdir/lpm.rc:root/lpm.rc \
@@ -42,6 +43,7 @@ PRODUCT_COPY_FILES += \
 
 # Bluetooth configuration file
 PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/etc/init.bt.sh:system/etc/init.bt.sh \
     $(LOCAL_PATH)/configs/etc/PSConfig_8811.psr:system/etc/PSConfig_8811.psr
 
 # Wifi
@@ -56,7 +58,6 @@ PRODUCT_PROPERTY_OVERRIDES += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/etc/98netflix:system/etc/init.d/98netflix
 
-
 # Packages
 PRODUCT_PACKAGES += \
     com.android.future.usb.accessory \
@@ -64,20 +65,27 @@ PRODUCT_PACKAGES += \
     Torch \
     macloader
 
+# Bluetooth
+PRODUCT_PACKAGES += \
+    haltest \
+    hciattach \
+    hciconfig \
+    hcitool \
+    bccmd
+
 # HAL
 PRODUCT_PACKAGES += \
-	audio.a2dp.default \
-	audio.primary.exynos4 \
-	audio.usb.default \
-	camera.smdk4210 \
-	gralloc.exynos4 \
-	hwcomposer.exynos4 \
-	lights.exynos4 \
-	sensors.exynos4 \
-	libhwconverter \
-	libs5pjpeg \
-	libfimg \
-	libnetcmdiface
+    audio.a2dp.default \
+    audio.primary.exynos4 \
+    audio.usb.default \
+    camera.smdk4210 \
+    gralloc.exynos4 \
+    hwcomposer.exynos4 \
+    lights.exynos4 \
+    libhwconverter \
+    libs5pjpeg \
+    libfimg \
+    libnetcmdiface \
 
 # Charger
 PRODUCT_PACKAGES += \
@@ -115,19 +123,22 @@ PRODUCT_PACKAGES += \
 
 # These are the hardware-specific features
 PRODUCT_COPY_FILES += \
-	frameworks/native/data/etc/android.hardware.audio.low_latency.xml:system/etc/permissions/android.hardware.audio.low_latency.xml \
-	frameworks/native/data/etc/android.hardware.camera.flash-autofocus.xml:system/etc/permissions/android.hardware.camera.flash-autofocus.xml \
-	frameworks/native/data/etc/android.hardware.camera.front.xml:system/etc/permissions/android.hardware.camera.front.xml \
-	frameworks/native/data/etc/android.hardware.location.gps.xml:system/etc/permissions/android.hardware.location.gps.xml \
-	frameworks/native/data/etc/android.hardware.wifi.xml:system/etc/permissions/android.hardware.wifi.xml \
-	frameworks/native/data/etc/android.hardware.sensor.light.xml:system/etc/permissions/android.hardware.sensor.light.xml \
-	frameworks/native/data/etc/android.hardware.sensor.gyroscope.xml:system/etc/permissions/android.hardware.sensor.gyroscope.xml \
-	frameworks/native/data/etc/android.hardware.sensor.accelerometer.xml:system/etc/permissions/android.hardware.sensor.accelerometer.xml \
-	frameworks/native/data/etc/android.hardware.touchscreen.multitouch.jazzhand.xml:system/etc/permissions/android.hardware.touchscreen.multitouch.jazzhand.xml \
-	frameworks/native/data/etc/android.soft0ware.sip.voip.xml:system/etc/permissions/android.software.sip.voip.xml \
-	frameworks/native/data/etc/android.hardware.usb.accessory.xml:system/etc/permissions/android.hardware.usb.accessory.xml \
-	frameworks/native/data/etc/android.hardware.usb.host.xml:system/etc/permissions/android.hardware.usb.host.xml \
-	frameworks/native/data/etc/tablet_core_hardware.xml:system/etc/permissions/tablet_core_hardware.xml
+    frameworks/native/data/etc/android.hardware.audio.low_latency.xml:system/etc/permissions/android.hardware.audio.low_latency.xml \
+    frameworks/native/data/etc/android.hardware.camera.flash-autofocus.xml:system/etc/permissions/android.hardware.camera.flash-autofocus.xml \
+    frameworks/native/data/etc/android.hardware.camera.front.xml:system/etc/permissions/android.hardware.camera.front.xml \
+    frameworks/native/data/etc/android.hardware.location.gps.xml:system/etc/permissions/android.hardware.location.gps.xml \
+    frameworks/native/data/etc/android.hardware.sensor.accelerometer.xml:system/etc/permissions/android.hardware.sensor.accelerometer.xml \
+    frameworks/native/data/etc/android.hardware.sensor.compass.xml:system/etc/permissions/android.hardware.sensor.compass.xml \
+    frameworks/native/data/etc/android.hardware.sensor.gyroscope.xml:system/etc/permissions/android.hardware.sensor.gyroscope.xml \
+    frameworks/native/data/etc/android.hardware.sensor.light.xml:system/etc/permissions/android.hardware.sensor.light.xml \
+    frameworks/native/data/etc/android.hardware.sensor.proximity.xml:system/etc/permissions/android.hardware.sensor.proximity.xml \
+    frameworks/native/data/etc/android.hardware.telephony.gsm.xml:system/etc/permissions/android.hardware.telephony.gsm.xml \
+    frameworks/native/data/etc/android.hardware.touchscreen.multitouch.jazzhand.xml:system/etc/permissions/android.hardware.touchscreen.multitouch.jazzhand.xml \
+    frameworks/native/data/etc/android.hardware.usb.accessory.xml:system/etc/permissions/android.hardware.usb.accessory.xml \
+    frameworks/native/data/etc/android.hardware.usb.host.xml:system/etc/permissions/android.hardware.usb.host.xml \
+    frameworks/native/data/etc/android.hardware.wifi.xml:system/etc/permissions/android.hardware.wifi.xml \
+    frameworks/native/data/etc/android.software.sip.voip.xml:system/etc/permissions/android.software.sip.voip.xml \
+    frameworks/native/data/etc/tablet_core_hardware.xml:system/etc/permissions/tablet_core_hardware.xml
 
 # modified keylayout for keyboard dock
 PRODUCT_COPY_FILES += \
