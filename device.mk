@@ -25,22 +25,15 @@ PRODUCT_LOCALES += mdpi tvdpi hdpi
 # Init files
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/rootdir/init.smdk4210.rc:root/init.smdk4210.rc \
+    $(LOCAL_PATH)/rootdir/init.smdk4210.gps.rc:root/init.smdk4210.gps.rc \
     $(LOCAL_PATH)/rootdir/init.smdk4210.usb.rc:root/init.smdk4210.usb.rc \
     $(LOCAL_PATH)/rootdir/lpm.rc:root/lpm.rc \
     $(LOCAL_PATH)/rootdir/fstab.smdk4210:root/fstab.smdk4210 \
     $(LOCAL_PATH)/rootdir/ueventd.smdk4210.rc:root/ueventd.smdk4210.rc
 
-# recovery rc
+# recovery rootdir
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/rootdir/init.recovery.smdk4210.rc:root/init.recovery.smdk4210.rc
-
-# @daniel added, bluez from cm10 /build, audio seems no use...
-#PRODUCT_COPY_FILES += \
-#        system/bluetooth/data/audio.conf:system/etc/bluetooth/audio.conf \
-#        system/bluetooth/data/auto_pairing.conf:system/etc/bluetooth/auto_pairing.conf \
-#        system/bluetooth/data/blacklist.conf:system/etc/bluetooth/blacklist.conf \
-#        system/bluetooth/data/input.conf:system/etc/bluetooth/input.conf \
-#        system/bluetooth/data/network.conf:system/etc/bluetooth/network.conf
 
 # Audio @daniel, move here
 PRODUCT_COPY_FILES += \
@@ -69,11 +62,7 @@ PRODUCT_PACKAGES += \
     com.android.future.usb.accessory \
     librs_jni \
     Torch \
-    macloader \
-    bccmd
-#    libsurfaceflinger_client \
-#    AdvancedDisplay \
-#    Smdk4210TabSettings
+    macloader
 
 # HAL
 PRODUCT_PACKAGES += \
@@ -89,8 +78,6 @@ PRODUCT_PACKAGES += \
 	libs5pjpeg \
 	libfimg \
 	libnetcmdiface
-#	memtrack.exynos4 \
-#	libaudiohw_legacy \
 
 # Charger
 PRODUCT_PACKAGES += \
