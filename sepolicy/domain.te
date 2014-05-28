@@ -1,5 +1,10 @@
-## /dev/mali, /dev/ump
-allow domain mali_device:chr_file rw_file_perms;
+## bccmd daemon
+type bccmd, domain;
+permissive bccmd;
+type bccmd_exec, exec_type, file_type;
+init_daemon_domain(bccmd)
+unconfined_domain(bccmd)
 
-## Firmwares
-allow ueventd { firmware_mfc }:file r_file_perms;
+## HCI
+allow hci_attach hci_attach_dev:chr_file rw_file_perms;
+allow bccmd hci_attach_dev:chr_file rw_file_perms;

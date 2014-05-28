@@ -153,10 +153,13 @@ BOARD_SEPOLICY_DIRS += \
 BOARD_SEPOLICY_UNION += \
     device.te \
     domain.te \
+    drmserver.te \
     file.te \
     file_contexts \
     rild.te \
-    wpa_supplicant.te \
+    ueventd.te \
+    vold.te \
+    wpa_supplicant.te
 
 # Charging Mode (LPM)
 BOARD_CHARGING_MODE_BOOTING_LPM := "/sys/class/power_supply/battery/batt_lp_charging"
