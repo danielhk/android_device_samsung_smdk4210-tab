@@ -423,7 +423,7 @@ int exynos_exif_create(struct exynos_camera *exynos_camera,
 
 	camera_memory_t *exif_data_memory;
 	void *exif_data;
-	int exif_data_size;
+	int exif_data_size=57344;	//@daniel, MemoryHeapBase can't evaluate size, allocate enough for exif here.
 	int exif_size;
 
 	void *exif_ifd_data_start, *exif_ifd_start, *exif_ifd_gps, *exif_ifd_thumb;

@@ -58,7 +58,7 @@ struct exynos_camera_preset exynos_camera_presets_galaxytab[] = {
 		.vertical_view_angle = 47.1f,
 		.metering = METERING_CENTER,
 		.params = {
-			.preview_size_values = "1270x800,640x480,800x480,320x240,176x144",
+			.preview_size_values = "1280x800,1280x720,640x480,320x240,160x120",
 			.preview_size = "640x480",
 			.preview_format_values = "yuv420sp,yuv420p,rgb565",
 			.preview_format = "yuv420sp",
@@ -67,11 +67,11 @@ struct exynos_camera_preset exynos_camera_presets_galaxytab[] = {
 			.preview_fps_range_values = "(7000,30000)",
 			.preview_fps_range = "7000,30000",
 
-			.picture_size_values = "2048x1536,1280x960,800x480,640x480",
+			.picture_size_values = "2048x1536,1280x960,640x480",
 			.picture_size = "2048x1536",
 			.picture_format_values = "jpeg",
 			.picture_format = "jpeg",
-			.jpeg_thumbnail_size_values = "320x240,400x240,0x0",
+			.jpeg_thumbnail_size_values = "400x240,320x240,0x0",
 			.jpeg_thumbnail_width = 320,
 			.jpeg_thumbnail_height = 240,
 			.jpeg_thumbnail_quality = 100,
@@ -80,8 +80,8 @@ struct exynos_camera_preset exynos_camera_presets_galaxytab[] = {
 			.video_snapshot_supported = 0,
 			.full_video_snap_supported = 0,
 
-			.recording_size = "720x480",
-			.recording_size_values = "1920x1080,1280x720,720x480,640x480",
+			.recording_size = "1280x720",
+			.recording_size_values = "1280x720,640x480",
 			.recording_format = "yuv420sp",
 
 			.focus_mode = "auto",
@@ -130,7 +130,7 @@ struct exynos_camera_preset exynos_camera_presets_galaxytab[] = {
 		.vertical_view_angle = 39.4f,
 		.metering = METERING_CENTER,
 		.params = {
-			.preview_size_values = "640x480,352x288,320x240,176x144",
+			.preview_size_values = "640x480,320x240,160x120",
 			.preview_size = "640x480",
 			.preview_format_values = "yuv420sp,yuv420p,rgb565",
 			.preview_format = "yuv420sp",
@@ -143,7 +143,7 @@ struct exynos_camera_preset exynos_camera_presets_galaxytab[] = {
 			.picture_size = "1600x1200",
 			.picture_format_values = "jpeg",
 			.picture_format = "jpeg",
-			.jpeg_thumbnail_size_values = "160x120,0x0",
+			.jpeg_thumbnail_size_values = "320x240,160x120,0x0",
 			.jpeg_thumbnail_width = 160,
 			.jpeg_thumbnail_height = 120,
 			.jpeg_thumbnail_quality = 100,
@@ -152,8 +152,8 @@ struct exynos_camera_preset exynos_camera_presets_galaxytab[] = {
 			.video_snapshot_supported = 0,
 			.full_video_snap_supported = 0,
 
-			.recording_size = "640x480",
-			.recording_size_values = "640x480",
+			.recording_size = "800x600",
+			.recording_size_values = "800x600,640x480",
 			.recording_format = "yuv420sp",
 
 			.focus_mode = "fixed",
@@ -199,6 +199,10 @@ struct exynos_v4l2_node exynos_v4l2_nodes_galaxytab[] = {
 	{
 		.id = 2,
 		.node = "/dev/video2",
+	},
+	{
+		.id = 3,
+		.node = "/dev/video3",
 	},
 };
 
@@ -1173,6 +1177,7 @@ int exynos_camera_picture(struct exynos_camera *exynos_camera)
 		}
 
 		jpeg_out_size = jpeg_enc_params.size;
+
 		if (jpeg_out_size <= 0) {
 			ALOGE("%s: Failed to get JPEG out size", __func__);
 			api_jpeg_encode_deinit(jpeg_fd);
@@ -1290,6 +1295,9 @@ int exynos_camera_picture(struct exynos_camera *exynos_camera)
 		}
 
 		jpeg_out_size = jpeg_enc_params.size;
+
+		ALOGD("%s:out size=%d", __func__,jpeg_out_size);	//@daniel
+
 		if (jpeg_out_size <= 0) {
 			ALOGE("%s: Failed to get JPEG out size", __func__);
 			api_jpeg_encode_deinit(jpeg_fd);
@@ -1332,6 +1340,8 @@ int exynos_camera_picture(struct exynos_camera *exynos_camera)
 	}
 
 	data_size = exif_size + picture_size;
+
+	ALOGD("%s:exif size=%d,pic size=%d", __func__,exif_size,picture_size);	//@daniel
 
 	if (exynos_camera->callbacks.request_memory != NULL) {
 		data_memory =

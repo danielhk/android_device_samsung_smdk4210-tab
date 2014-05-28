@@ -101,7 +101,7 @@ int exynos_v4l2_open(struct exynos_camera *exynos_camera, int exynos_v4l2_id)
 	node = exynos_camera->config->v4l2_nodes[index].node;
 	fd = open(node, O_RDWR);
 	if (fd < 0) {
-		ALOGE("%s: Unable to open v4l2 node #%d,fd<0", __func__, exynos_v4l2_id);
+		ALOGE("%s: Unable to open v4l2 node #%d", __func__, exynos_v4l2_id);
 		return -1;
 	}
 
