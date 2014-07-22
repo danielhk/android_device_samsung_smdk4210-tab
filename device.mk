@@ -15,7 +15,6 @@
 #
 
 $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base.mk)
-$(call inherit-product, vendor/cm/config/common_full_tablet_wifionly.mk)
 $(call inherit-product-if-exists, vendor/samsung/smdk4210-tab/vendor.mk)
 
 # include a bunch of resources
@@ -24,12 +23,13 @@ PRODUCT_LOCALES += mdpi tvdpi hdpi
 
 # rootdir files
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/rootdir/init.smdk4210.rc:root/init.smdk4210.rc \
+    $(LOCAL_PATH)/configs/etc/twrp.fstab:recovery/root/etc/twrp.fstab \
+    $(LOCAL_PATH)/rootdir/fstab.smdk4210:root/fstab.smdk4210 \
     $(LOCAL_PATH)/rootdir/init.smdk4210.bt.rc:root/init.smdk4210.bt.rc \
+    $(LOCAL_PATH)/rootdir/init.smdk4210.rc:root/init.smdk4210.rc \
     $(LOCAL_PATH)/rootdir/init.smdk4210.gps.rc:root/init.smdk4210.gps.rc \
     $(LOCAL_PATH)/rootdir/init.smdk4210.usb.rc:root/init.smdk4210.usb.rc \
     $(LOCAL_PATH)/rootdir/lpm.rc:root/lpm.rc \
-    $(LOCAL_PATH)/rootdir/fstab.smdk4210:root/fstab.smdk4210 \
     $(LOCAL_PATH)/rootdir/ueventd.smdk4210.rc:root/ueventd.smdk4210.rc
 
 # recovery rootdir
@@ -53,7 +53,7 @@ PRODUCT_COPY_FILES += \
 
 PRODUCT_PROPERTY_OVERRIDES += \
     wifi.interface=wlan0 \
-    wifi.supplicant_scan_interval=80
+    wifi.supplicant_scan_interval=80 \
 
 # Netflix hack
 PRODUCT_COPY_FILES += \
@@ -65,23 +65,25 @@ PRODUCT_PACKAGES += \
     hostapd \
     hostapd_cli \
     librs_jni \
-    libsurfaceflinger_client \
-    Torch \
-    macloader
+    macloader \
+    OmniTorch
+#    libsurfaceflinger_client 
+#    Smdk4210TabSettings
 
-# Bluetooth
+# bluetooth packages
 PRODUCT_PACKAGES += \
-    haltest \
+    bccmd \
     hciattach \
     hciconfig \
     hcitool \
-    bccmd
+    sdptool
 
 # HAL
 PRODUCT_PACKAGES += \
     audio.a2dp.default \
     audio.primary.exynos4 \
     audio.usb.default \
+    libaudiohw_legacy \
     camera.smdk4210 \
     gralloc.exynos4 \
     hwcomposer.exynos4 \
@@ -91,6 +93,9 @@ PRODUCT_PACKAGES += \
     libfimg \
     libnetcmdiface \
     consumerir.exynos4
+
+#    sensors.exynos4
+#    memtrack.exynos4 \
 
 # Charger
 PRODUCT_PACKAGES += \
@@ -129,6 +134,7 @@ PRODUCT_PACKAGES += \
 # These are the hardware-specific features
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.audio.low_latency.xml:system/etc/permissions/android.hardware.audio.low_latency.xml \
+    frameworks/native/data/etc/android.hardware.bluetooth_le.xml:system/etc/permissions/android.hardware.bluetooth_le.xml \
     frameworks/native/data/etc/android.hardware.camera.flash-autofocus.xml:system/etc/permissions/android.hardware.camera.flash-autofocus.xml \
     frameworks/native/data/etc/android.hardware.camera.front.xml:system/etc/permissions/android.hardware.camera.front.xml \
     frameworks/native/data/etc/android.hardware.consumerir.xml:system/etc/permissions/android.hardware.consumerir.xml \
@@ -156,12 +162,21 @@ PRODUCT_PACKAGES += \
 
 PRODUCT_CHARACTERISTICS := tablet
 
+# Audio COnfiguration
+PRODUCT_PROPERTY_OVERRIDES += \
+	persist.audio.handset.mic.type=digital \
+	persist.audio.dualmic.config=endfire \
+	persist.audio.fluence.voicecall=true \
+	persist.audio.handset.mic=dmic \
+	persist.audio.fluence.mode=endfire \
+	persist.audio.lowlatency.rec=false \
+
 # Graphics
 PRODUCT_PROPERTY_OVERRIDES += \
-    ro.zygote.disable_gl_preload=1 \
-    ro.opengles.version=131072 \
+    ro.zygote.disable_gl_preload=true \
+    ro.opengles.version=131072 
+    hwui.render_dirty_regions=false \
     ro.bq.gpu_to_cpu_unsupported=1 \
-    hwui.render_dirty_regions=false
 
 PRODUCT_TAGS += dalvik.gc.type-precise
 

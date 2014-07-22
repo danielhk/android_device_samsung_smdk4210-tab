@@ -1,0 +1,55 @@
+on boot
+    setprop bluetooth.bccmd on
+    write /sys/class/rfkill/rfkill0/state 1
+    start bccmd
+
+on property:init.svc.bluetoothd=running
+    start hciattach
+
+#on property:init.svc.bluetoothd=stopped
+#    stop hciattach
+
+#on property:init.svc.hciattach=stopped
+#    write /sys/class/rfkill/rfkill0/state 0
+
+service bccmd /system/bin/bccmd -t bcsp -d /dev/ttySAC0 -b 115200 psload -r /system/etc/PSConfig_8811.psr
+    class main
+    group bluetooth net_bt_admin system net_bt_stack
+    disabled
+    oneshot
+
+service hciattach /system/bin/logwrapper /system/bin/hciattach -p /dev/ttySAC0 bcsp 3000000 flow
+    class main
+    user bluetooth
+    group bluetooth net_bt_admin system net_bt_stack
+    disabled
+    oneshot
+
+#service bt_start /system/bin/logwrapper /system/bin/sh /system/etc/init.bt.sh start
+#    class main
+#    user root
+#    group bluetooth net_bt_admin system net_bt_stack
+#    disabled
+#    oneshot
+
+#service bt_stop /system/bin/logwrapper /system/bin/sh /system/etc/init.bt.sh stop
+#    class main
+#    user root
+#    group bluetooth net_bt_admin system net_bt_stack
+#    disabled
+#    oneshot
+
+service hci0_up /system/bin/logwrapper /system/xbin/hciconfig hci0 up
+    class main
+    group bluetooth
+    disabled
+    oneshot
+
+service hci0_down /system/bin/logwrapper /system/xbin/hciconfig hci0 down
+    class main
+    group bluetooth net_bt_admin system net_bt_stack
+    disabled
+    oneshot
+
+import /init.bluetooth.rc
+
