@@ -24,12 +24,13 @@ PRODUCT_LOCALES += mdpi tvdpi hdpi
 
 # rootdir files
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/rootdir/init.smdk4210.rc:root/init.smdk4210.rc \
+    $(LOCAL_PATH)/configs/etc/twrp.fstab:recovery/root/etc/twrp.fstab \
+    $(LOCAL_PATH)/rootdir/fstab.smdk4210:root/fstab.smdk4210 \
     $(LOCAL_PATH)/rootdir/init.smdk4210.bt.rc:root/init.smdk4210.bt.rc \
+    $(LOCAL_PATH)/rootdir/init.smdk4210.rc:root/init.smdk4210.rc \
     $(LOCAL_PATH)/rootdir/init.smdk4210.gps.rc:root/init.smdk4210.gps.rc \
     $(LOCAL_PATH)/rootdir/init.smdk4210.usb.rc:root/init.smdk4210.usb.rc \
     $(LOCAL_PATH)/rootdir/lpm.rc:root/lpm.rc \
-    $(LOCAL_PATH)/rootdir/fstab.smdk4210:root/fstab.smdk4210 \
     $(LOCAL_PATH)/rootdir/ueventd.smdk4210.rc:root/ueventd.smdk4210.rc
 
 # recovery rootdir
@@ -53,7 +54,7 @@ PRODUCT_COPY_FILES += \
 
 PRODUCT_PROPERTY_OVERRIDES += \
     wifi.interface=wlan0 \
-    wifi.supplicant_scan_interval=80
+    wifi.supplicant_scan_interval=80 \
 
 # Netflix hack
 PRODUCT_COPY_FILES += \
@@ -66,10 +67,12 @@ PRODUCT_PACKAGES += \
     hostapd_cli \
     librs_jni \
     libsurfaceflinger_client \
-    Torch \
-    macloader
+    macloader \
+    OmniTorch
 
-# Bluetooth
+#    Smdk4210TabSettings
+
+# bluetooth packages
 PRODUCT_PACKAGES += \
     haltest \
     hciattach \
@@ -91,6 +94,10 @@ PRODUCT_PACKAGES += \
     libfimg \
     libnetcmdiface \
     consumerir.exynos4
+
+#    libaudiohw_legacy \
+#    sensors.exynos4
+#    memtrack.exynos4 \
 
 # Charger
 PRODUCT_PACKAGES += \
@@ -129,6 +136,7 @@ PRODUCT_PACKAGES += \
 # These are the hardware-specific features
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.audio.low_latency.xml:system/etc/permissions/android.hardware.audio.low_latency.xml \
+    frameworks/native/data/etc/android.hardware.bluetooth_le.xml:system/etc/permissions/android.hardware.bluetooth_le.xml \
     frameworks/native/data/etc/android.hardware.camera.flash-autofocus.xml:system/etc/permissions/android.hardware.camera.flash-autofocus.xml \
     frameworks/native/data/etc/android.hardware.camera.front.xml:system/etc/permissions/android.hardware.camera.front.xml \
     frameworks/native/data/etc/android.hardware.consumerir.xml:system/etc/permissions/android.hardware.consumerir.xml \
@@ -138,7 +146,6 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.sensor.gyroscope.xml:system/etc/permissions/android.hardware.sensor.gyroscope.xml \
     frameworks/native/data/etc/android.hardware.sensor.light.xml:system/etc/permissions/android.hardware.sensor.light.xml \
     frameworks/native/data/etc/android.hardware.sensor.proximity.xml:system/etc/permissions/android.hardware.sensor.proximity.xml \
-    frameworks/native/data/etc/android.hardware.telephony.gsm.xml:system/etc/permissions/android.hardware.telephony.gsm.xml \
     frameworks/native/data/etc/android.hardware.touchscreen.multitouch.jazzhand.xml:system/etc/permissions/android.hardware.touchscreen.multitouch.jazzhand.xml \
     frameworks/native/data/etc/android.hardware.usb.accessory.xml:system/etc/permissions/android.hardware.usb.accessory.xml \
     frameworks/native/data/etc/android.hardware.usb.host.xml:system/etc/permissions/android.hardware.usb.host.xml \
@@ -160,8 +167,8 @@ PRODUCT_CHARACTERISTICS := tablet
 PRODUCT_PROPERTY_OVERRIDES += \
     ro.zygote.disable_gl_preload=1 \
     ro.opengles.version=131072 \
+    hwui.render_dirty_regions=false \
     ro.bq.gpu_to_cpu_unsupported=1 \
-    hwui.render_dirty_regions=false
 
 PRODUCT_TAGS += dalvik.gc.type-precise
 
