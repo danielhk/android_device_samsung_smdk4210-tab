@@ -167,12 +167,6 @@ on boot
     # Device Encryption by B2B Security Lab.
     setprop ro.crypto.keyfile.userdata /efs/metadata
 
-# set default
-#service sys_default /system/bin/logwrapper /system/bin/sh /system/etc/init.sys.sh
-#    class main
-#    group system
-#    oneshot
-
 # For RIL
 service cpboot-daemon /sbin/cbd -d -p 8
     class main

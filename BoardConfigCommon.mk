@@ -24,12 +24,12 @@ TARGET_ARCH_VARIANT_FPU := neon
 ARCH_ARM_HAVE_TLS_REGISTER := true
 ARCH_ARM_HAVE_NEON := true
 
+BOARD_VENDOR := samsung
 TARGET_BOARD_PLATFORM := exynos4
 TARGET_FAMILY := smdk4210-tab
 TARGET_SOC := exynos4210
 TARGET_BOOTLOADER_BOARD_NAME := smdk4210
 TARGET_BOARD_INFO_FILE := device/samsung/smdk4210-tab/board-info.txt
-BOARD_VENDOR := samsung
 
 EXYNOS4_ENHANCEMENTS := true
 EXYNOS4210_ENHANCEMENTS := true
@@ -53,7 +53,7 @@ TARGET_KERNEL_SOURCE := kernel/samsung/smdk4210
 TARGET_KERNEL_MODULES := CLEAN_MODULES
 BOARD_KERNEL_BASE := 0x40000000
 BOARD_KERNEL_PAGESIZE := 4096
-BOARD_KERNEL_CMDLINE :=
+BOARD_KERNEL_CMDLINE := ""
 CLEAN_MODULES:
 	arm-eabi-strip --strip-debug `find $(KERNEL_MODULES_OUT) -name *.ko`
 
@@ -77,7 +77,7 @@ BOARD_HARDWARE_CLASS := hardware/samsung/cmhw
 
 # Graphics
 BOARD_EGL_CFG := device/samsung/smdk4210-tab/configs/egl.cfg
-BOARD_EGL_NEEDS_LEGACY_FB := true
+BOARD_USE_MHEAP_SCREENSHOT := true
 USE_OPENGL_RENDERER := true
 BOARD_EGL_WORKAROUND_BUG_10194508 := true
 
@@ -112,10 +112,6 @@ BOARD_USES_GENERIC_AUDIO := false
 BOARD_USE_TINYALSA_AUDIO := true
 BOARD_USE_YAMAHA_MC1N2_AUDIO := true
 
-# RIL
-BOARD_PROVIDES_LIBRIL := true
-BOARD_MODEM_TYPE := xmm6260
-
 # Camera
 BOARD_USES_PROPRIETARY_LIBCAMERA := true
 BOARD_USES_PROPRIETARY_LIBFIMC := true
@@ -128,9 +124,11 @@ BOARD_HAVE_BLUETOOTH := true
 BOARD_HAVE_BLUETOOTH_CSR := true
 
 # Wifi
-BOARD_WLAN_DEVICE                := ath6kl
+BOARD_WIFI_VENDOR		 := atheros
+BOARD_WLAN_DEVICE		 := ath6kl
+BOARD_SOFTAP_DEVICE		 := ath6kl
 WPA_SUPPLICANT_VERSION           := VER_0_8_X
-BOARD_WPA_SUPPLICANT_DRIVER      := NL80211
+BOARD_WPA_SUPPLICANT_DRIVER	 := NL80211
 BOARD_WPA_SUPPLICANT_PRIVATE_LIB := lib_driver_cmd_ath6kl
 BOARD_HOSTAPD_DRIVER		 := NL80211
 BOARD_HOSTAPD_PRIVATE_LIB	 := lib_driver_cmd_ath6kl
@@ -152,6 +150,7 @@ CONFIG_IEEE80211N		 := true
 CONFIG_P2P			 := true
 CONFIG_P2P_MANAGER		 := true
 CONFIG_WPS			 := true
+CONFIG_WIFI_DISPLAY		 := true
 
 # Sepolicy
 BOARD_SEPOLICY_DIRS += \
@@ -163,15 +162,19 @@ BOARD_SEPOLICY_UNION += \
     drmserver.te \
     file.te \
     file_contexts \
+    mediaserver.te \
     rild.te \
+    system_server.te \
     ueventd.te \
-    vold.te \
     wpa_supplicant.te
 
 # Charging Mode (LPM)
 BOARD_CHARGING_MODE_BOOTING_LPM := "/sys/class/power_supply/battery/batt_lp_charging"
 BOARD_BATTERY_DEVICE_NAME := "battery"
 BOARD_CHARGER_RES := "device/samsung/smdk4210-tab/charger_res/images"
+
+# Override healthd HAL
+BOARD_HAL_STATIC_LIBRARIES := libhealthd.exynos4
 
 # Recovery
 BOARD_CUSTOM_GRAPHICS := ../../../device/samsung/smdk4210-tab/recovery/graphics.c
