@@ -1,23 +1,21 @@
 # GFX
 /dev/mali                               u:object_r:graphics_device:s0
-/dev/ump                                u:object_r:graphics_device:s0
+/dev/s5p-smem 				u:object_r:secmem_device:s0
+/dev/ump                                u:object_r:ump_device:s0
 /dev/fimg2d                             u:object_r:graphics_device:s0
 
 # RIL
 /dev/umts_boot0                         u:object_r:radio_device:s0
-/dev/umts_csd                           u:object_r:radio_device:s0
+/dev/umts_boot1                         u:object_r:radio_device:s0
 /dev/umts_ipc0                          u:object_r:radio_device:s0
-/dev/umts_loopback0                     u:object_r:radio_device:s0
 /dev/umts_ramdump0                      u:object_r:radio_device:s0
 /dev/umts_rfs0                          u:object_r:radio_device:s0
-/dev/umts_router                        u:object_r:radio_device:s0
 
 /dev/block/mmcblk0p7                    u:object_r:efs_block_device:s0
 
 # Bluetooth
 /dev/ttySAC0                            u:object_r:hci_attach_dev:s0
 /efs/bluetooth(/.*)?                    u:object_r:bluetooth_data_file:s0
-/system/bin/bccmd			u:object_r:bccmd_exec:s0
 /system/bin/hciattach			u:object_r:hci_attach_exec:s0
 
 # GPS
@@ -25,7 +23,7 @@
 /system/bin/gpsd			u:object_r:gpsd_exec:s0
 
 # Sensors
-/dev/akm8975                            u:object_r:akm_device:s0
+/dev/akm8975                            u:object_r:sensors_device:s0
 
 # for wpa_supp
 /dev/rfkill                             u:object_r:rfkill_device:s0

@@ -2,6 +2,7 @@
 type bccmd, domain;
 permissive bccmd;
 type bccmd_exec, exec_type, file_type;
+
 init_daemon_domain(bccmd)
 unconfined_domain(bccmd)
 

@@ -1,1 +1,2 @@
-allow drmserver sdcard_external:file open;
+allow drmserver secmem_device:chr_file rw_file_perms;
+
