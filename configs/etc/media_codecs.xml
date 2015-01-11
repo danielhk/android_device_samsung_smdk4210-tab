@@ -95,7 +95,7 @@ Only the three quirks included above are recognized at this point:
         <MediaCodec name="OMX.google.h264.decoder" type="video/avc" />
         <MediaCodec name="OMX.google.vpx.decoder" type="video/x-vnd.on2.vp8" />
     </Decoders>
-
+    <Include href="media_codecs_ffmpeg.xml" />
     <Encoders>
         <MediaCodec name="OMX.SEC.MPEG4.Encoder" type="video/mp4v-es" />
         <MediaCodec name="OMX.SEC.H263.Encoder" type="video/3gpp" />
