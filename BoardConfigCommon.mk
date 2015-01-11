@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 The CyanogenMod Project
+# Copyright (C) 2014 The CyanogenMod Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -80,6 +80,7 @@ BOARD_EGL_CFG := device/samsung/smdk4210-tab/configs/egl.cfg
 BOARD_USE_MHEAP_SCREENSHOT := true
 USE_OPENGL_RENDERER := true
 BOARD_EGL_WORKAROUND_BUG_10194508 := true
+EXTENDED_FONT_FOOTPRINT := true
 
 # Enable WEBGL in WebKit
 ENABLE_WEBGL := true
