@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 The CyanogenMod Project
+# Copyright (C) 2014 The CyanogenMod Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -27,7 +27,6 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/rootdir/init.smdk4210.rc:root/init.smdk4210.rc \
     $(LOCAL_PATH)/rootdir/init.smdk4210.bt.rc:root/init.smdk4210.bt.rc \
     $(LOCAL_PATH)/rootdir/init.smdk4210.usb.rc:root/init.smdk4210.usb.rc \
-    $(LOCAL_PATH)/rootdir/lpm.rc:root/lpm.rc \
     $(LOCAL_PATH)/rootdir/fstab.smdk4210:root/fstab.smdk4210 \
     $(LOCAL_PATH)/rootdir/ueventd.smdk4210.rc:root/ueventd.smdk4210.rc
 
