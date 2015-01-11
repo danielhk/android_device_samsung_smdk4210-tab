@@ -88,6 +88,7 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     audio.a2dp.default \
     audio.primary.exynos4 \
+    audio.sco.default \
     audio.usb.default \
     camera.smdk4210 \
     gralloc.exynos4 \
