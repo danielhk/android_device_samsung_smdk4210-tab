@@ -1,24 +1,8 @@
-on post-fs-data
-    # bluetooth
-    mkdir /data/misc/bluedroid 0770 bluetooth net_bt_stack
-    mkdir /data/misc/bluetooth 0770 system system
+on charger
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor powersave
+    start charger
 
-    mkdir /efs/bluetooth          0775 radio system
-
-    setprop ro.bt.bdaddr_path "/efs/bluetooth/bt_addr"
-    chown bluetooth bluetooth ro.bt.bdaddr_path
-    chown bluetooth bluetooth /dev/ttySAC0
-    chmod 0600		      /dev/ttySAC0
-    chown bluetooth bluetooth /sys/class/rfkill/rfkill0/state
-    chown bluetooth bluetooth /sys/class/rfkill/rfkill0/type
-    chmod 0660                /sys/class/rfkill/rfkill0/state
-
-on boot
-# Permissions for mDNIe
-    chown system media_rw /sys/class/mdnie/mdnie/mode
-    chown system media_rw /sys/class/mdnie/mdnie/outdoor
-    chown system media_rw /sys/class/mdnie/mdnie/scenario
-
-# Set mDNIe mode and scenario
-    write /sys/class/mdnie/mdnie/scenario 0
-    write /sys/class/mdnie/mdnie/mode 1
+service charger /charger
+    class charger
+    critical
+    seclabel u:r:healthd:s0
