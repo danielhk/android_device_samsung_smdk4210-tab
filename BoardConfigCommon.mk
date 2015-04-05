@@ -44,6 +44,9 @@ TARGET_NO_RADIOIMAGE := true
 DEVICE_PACKAGE_OVERLAYS += device/samsung/smdk4210-tab/overlay
 TARGET_SPECIFIC_HEADER_PATH += device/samsung/smdk4210-tab/overlay/include
 
+# linker support NON PIE 
+TARGET_SUPPORT_NON_PIE := true
+
 # Init
 TARGET_PROVIDES_INIT := true
 TARGET_PROVIDES_INIT_TARGET_RC := true
