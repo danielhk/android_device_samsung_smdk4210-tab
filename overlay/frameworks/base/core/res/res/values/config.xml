@@ -104,8 +104,8 @@
         <item>"bnep\\d"</item>
     </string-array>
 
-    <!-- Workaround for devices with broken keyboards -->
-    <bool name="config_forceDisableHardwareKeyboard">true</bool>
+    <!-- Workaround for devices with broken keyboards
+    <bool name="config_forceDisableHardwareKeyboard">true</bool> -->
 
     <!-- Separate software navigation bar required on this device. -->
     <bool name="config_showNavigationBar">true</bool>
