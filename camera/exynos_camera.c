@@ -58,7 +58,11 @@ struct exynos_camera_preset exynos_camera_presets_galaxytab[] = {
 		.vertical_view_angle = 47.1f,
 		.metering = METERING_CENTER,
 		.params = {
+#ifdef TAB_P2
+			.preview_size_values = "1280x720,1024x768,1024x552,800x600,720x480,640x480,528x432,352x288,320x240,176x144",
+#else
 			.preview_size_values = "1280x720,1024x768,1024x576,800x600,720x480,640x480,528x432,352x288,320x240,176x144",
+#endif
 			.preview_size = "640x480",
 			.preview_format_values = "yuv420sp,yuv420p,rgb565",
 			.preview_format = "yuv420sp",
@@ -66,8 +70,11 @@ struct exynos_camera_preset exynos_camera_presets_galaxytab[] = {
 			.preview_frame_rate = 30,
 			.preview_fps_range_values = "(7000,30000)",
 			.preview_fps_range = "7000,30000",
-
-			.picture_size_values = "2048x1536,1280x960,640x480",
+#ifdef TAB_P2
+			.picture_size_values = "2048x1536,2048x1104,640x480",
+#else
+			.picture_size_values = "2048x1536,2048x1152,640x480",
+#endif
 			.picture_size = "2048x1536",
 			.picture_format_values = "jpeg",
 			.picture_format = "jpeg",
@@ -199,10 +206,6 @@ struct exynos_v4l2_node exynos_v4l2_nodes_galaxytab[] = {
 	{
 		.id = 2,
 		.node = "/dev/video2",
-	},
-	{
-		.id = 3,
-		.node = "/dev/video3",
 	},
 };
 
@@ -826,10 +829,20 @@ int exynos_camera_params_apply(struct exynos_camera *exynos_camera)
 			flash_mode = FLASH_MODE_AUTO;
 
 		if (flash_mode != exynos_camera->flash_mode || force) {
+			if (exynos_camera->flash_mode == FLASH_MODE_TORCH) {
+			    int fd = open("/sys/devices/virtual/camera/rear/rear_flash", O_RDWR);
+			    write(fd, "0", 1);
+			    close(fd);
+			}
 			exynos_camera->flash_mode = flash_mode;
-			rc = exynos_v4l2_s_ctrl(exynos_camera, 0, V4L2_CID_CAMERA_FLASH_MODE, flash_mode);
+		 	rc = exynos_v4l2_s_ctrl(exynos_camera, 0, V4L2_CID_CAMERA_FLASH_MODE, flash_mode);
 			if (rc < 0)
 				ALOGE("%s: s ctrl failed!", __func__);
+			if (flash_mode == FLASH_MODE_TORCH) {
+			    int fd = open("/sys/devices/virtual/camera/rear/rear_flash", O_RDWR);
+			    write(fd, "1", 1);
+			    close(fd);
+			}			
 		}
 	}
 
@@ -1296,8 +1309,6 @@ int exynos_camera_picture(struct exynos_camera *exynos_camera)
 
 		jpeg_out_size = jpeg_enc_params.size;
 
-		ALOGD("%s:out size=%d", __func__,jpeg_out_size);	//@daniel
-
 		if (jpeg_out_size <= 0) {
 			ALOGE("%s: Failed to get JPEG out size", __func__);
 			api_jpeg_encode_deinit(jpeg_fd);
@@ -1340,8 +1351,6 @@ int exynos_camera_picture(struct exynos_camera *exynos_camera)
 	}
 
 	data_size = exif_size + picture_size;
-
-	ALOGD("%s:exif size=%d,pic size=%d", __func__,exif_size,picture_size);	//@daniel
 
 	if (exynos_camera->callbacks.request_memory != NULL) {
 		data_memory =

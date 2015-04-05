@@ -423,7 +423,7 @@ int exynos_exif_create(struct exynos_camera *exynos_camera,
 
 	camera_memory_t *exif_data_memory;
 	void *exif_data;
-	int exif_data_size=57344;	//@daniel, MemoryHeapBase can't evaluate size, allocate enough for exif here.
+	int exif_data_size;
 	int exif_size;
 
 	void *exif_ifd_data_start, *exif_ifd_start, *exif_ifd_gps, *exif_ifd_thumb;
@@ -442,6 +442,8 @@ int exynos_exif_create(struct exynos_camera *exynos_camera,
 		jpeg_thumbnail_data_memory == NULL || jpeg_thumbnail_size <= 0 ||
 		exif_data_memory_p == NULL || exif_size_p == NULL)
 		return -EINVAL;
+
+	exif_data_size = EXIF_FILE_SIZE + jpeg_thumbnail_size;
 
 	if (exynos_camera->callbacks.request_memory != NULL) {
 		exif_data_memory = exynos_camera->callbacks.request_memory(-1,
