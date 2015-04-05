@@ -23,14 +23,14 @@ $(INSTALLED_BOOTIMAGE_TARGET): $(INSTALLED_KERNEL_TARGET) $(INTERNAL_RAMDISK_FIL
 	$(call pretty,"Target boot image: $@")
 # daniel, may add the whole directory here
 	@chmod 0644 $(TARGET_ROOT_OUT)/*.*
-	$(MAKE) -C $(KERNEL_SRC) O=$(KERNEL_OUT) ARCH=$(TARGET_ARCH) $(ARM_CROSS_COMPILE) CONFIG_INITRAMFS_SOURCE=$(TARGET_ROOT_OUT) $(TARGET_PREBUILT_INT_KERNEL_TYPE)
+	$(MAKE) -C $(KERNEL_SRC) O=$(KERNEL_OUT) ARCH=$(TARGET_ARCH) $(KERNEL_CROSS_COMPILE) CONFIG_INITRAMFS_SOURCE=$(TARGET_ROOT_OUT) $(TARGET_PREBUILT_INT_KERNEL_TYPE)
 	$(ACP) $(KERNEL_BIN) $@
 	@echo -e ${CL_INS}"Made boot image: $@"${CL_RST}
 
 # we depend on the previous make target to insure that the two build serially
 $(INSTALLED_RECOVERYIMAGE_TARGET): $(INSTALLED_BOOTIMAGE_TARGET) $(recovery_uncompressed_ramdisk)
 	@echo "----- Making recovery image ------"
-	$(MAKE) -C $(KERNEL_SRC) O=$(KERNEL_OUT) ARCH=$(TARGET_ARCH) $(ARM_CROSS_COMPILE) CONFIG_INITRAMFS_SOURCE=$(recovery_uncompressed_ramdisk) $(TARGET_PREBUILT_INT_KERNEL_TYPE)
+	$(MAKE) -C $(KERNEL_SRC) O=$(KERNEL_OUT) ARCH=$(TARGET_ARCH) $(KERNEL_CROSS_COMPILE) CONFIG_INITRAMFS_SOURCE=$(recovery_uncompressed_ramdisk) $(TARGET_PREBUILT_INT_KERNEL_TYPE)
 	$(ACP) $(KERNEL_BIN) $@
 	@echo -e ${CL_INS}"Made recovery image: $@"${CL_RST}
 	$(hide) $(call assert-max-image-size,$@,$(BOARD_RECOVERYIMAGE_PARTITION_SIZE),raw)
