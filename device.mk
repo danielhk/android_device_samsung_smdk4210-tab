@@ -175,12 +175,12 @@ PRODUCT_TAGS += dalvik.gc.type-precise
 
 # Set default USB interface
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
-    persist.sys.usb.config=mtp \
+    persist.sys.usb.config=mtp,adb \
     persist.sys.root_access=3
 
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/etc/media_profiles.xml:system/etc/media_profiles.xml \
-    $(LOCAL_PATH)/configs/etc/media_codecs.xml:system/etc/media_codecs.xml\
+    $(LOCAL_PATH)/configs/etc/media_codecs.xml:system/etc/media_codecs.xml \
     frameworks/av/media/libstagefright/data/media_codecs_ffmpeg.xml:system/etc/media_codecs_ffmpeg.xml
 
 # Feature live wallpaper
