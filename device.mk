@@ -169,7 +169,8 @@ PRODUCT_PROPERTY_OVERRIDES += \
     ro.opengles.version=196609 \
     hwui.render_dirty_regions=false \
     ro.bq.gpu_to_cpu_unsupported=1 \
-    drm.service.enable=true
+    drm.service.enable=true \
+    persist.panel.orientation=270
 
 PRODUCT_TAGS += dalvik.gc.type-precise
 
