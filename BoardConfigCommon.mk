@@ -177,7 +177,7 @@ BOARD_CHARGER_SHOW_PERCENTAGE := true
 BOARD_HAL_STATIC_LIBRARIES := libhealthd.exynos4
 
 # Recovery
-BOARD_CUSTOM_GRAPHICS := ../../../device/samsung/smdk4210-tab/recovery/graphics.c
+# BOARD_CUSTOM_GRAPHICS := ../../../device/samsung/smdk4210-tab/recovery/graphics.c
 BOARD_UMS_LUNFILE := "/sys/class/android_usb/android0/f_mass_storage/lun0/file"
 TARGET_RECOVERY_PIXEL_FORMAT := "BGRA_8888"
 BOARD_USE_CUSTOM_RECOVERY_FONT := \"roboto_15x24.h\"
