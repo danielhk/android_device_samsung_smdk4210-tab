@@ -829,20 +829,10 @@ int exynos_camera_params_apply(struct exynos_camera *exynos_camera)
 			flash_mode = FLASH_MODE_AUTO;
 
 		if (flash_mode != exynos_camera->flash_mode || force) {
-			if (exynos_camera->flash_mode == FLASH_MODE_TORCH) {
-			    int fd = open("/sys/devices/virtual/camera/rear/rear_flash", O_RDWR);
-			    write(fd, "0", 1);
-			    close(fd);
-			}
 			exynos_camera->flash_mode = flash_mode;
 		 	rc = exynos_v4l2_s_ctrl(exynos_camera, 0, V4L2_CID_CAMERA_FLASH_MODE, flash_mode);
 			if (rc < 0)
 				ALOGE("%s: s ctrl failed!", __func__);
-			if (flash_mode == FLASH_MODE_TORCH) {
-			    int fd = open("/sys/devices/virtual/camera/rear/rear_flash", O_RDWR);
-			    write(fd, "1", 1);
-			    close(fd);
-			}			
 		}
 	}
 
