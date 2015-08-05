@@ -80,7 +80,7 @@ BOARD_HARDWARE_CLASS := hardware/samsung/cmhw
 
 # Graphics
 BOARD_EGL_CFG := device/samsung/smdk4210-tab/configs/egl.cfg
-BOARD_EGL_NEEDS_FNW := true
+BOARD_EGL_NEEDS_LEGACY_FB := true
 BOARD_USE_MHEAP_SCREENSHOT := true
 USE_OPENGL_RENDERER := true
 BOARD_EGL_WORKAROUND_BUG_10194508 := true
