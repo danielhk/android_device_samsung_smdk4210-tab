@@ -1,0 +1,11 @@
+# mount point	fstype		device
+/efs		ext4		/dev/block/mmcblk0p1		flags=display="EFS";backup=1;canbewiped
+/boot		emmc		/dev/block/mmcblk0p5
+/recovery	emmc		/dev/block/mmcblk0p6
+/cache		ext4		/dev/block/mmcblk0p7
+/system		ext4		/dev/block/platform/dw_mmc/by-name/FACTORYFS
+/data		ext4		/dev/block/platform/dw_mmc/by-name/DATAFS
+/preload	ext4		/dev/block/platform/dw_mmc/by-name/HIDDEN	flags=display="PRELOAD";backup=1;canbewiped;usermrf
+
+/external_sd	auto		/dev/block/mmcblk1p1	/dev/block/mmcblk1	flags=display="MicroSD card";storage;wipeingui;removable
+
