@@ -2,7 +2,6 @@ system/bin/bintvoutservice
 system/lib/libcec.so
 system/lib/libddc.so
 system/lib/libedid.so
-system/lib/libfimc.so:libfimc
 system/lib/libhdmi.so:libhdmi
 system/lib/libhdmiclient.so:libhdmiclient
 system/lib/libTVOut.so:libTVOut
