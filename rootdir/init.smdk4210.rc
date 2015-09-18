@@ -107,8 +107,8 @@ on post-fs-data
 
     # lcd
     chown system system /sys/class/backlight/panel/brightness
-#    chown system system /sys/class/backlight/panel/power_reduce
-#    chmod 0666          /sys/class/backlight/panel/power_reduce
+    chown system system /sys/class/lcd/panel/power_reduce
+    chmod 0666          /sys/class/lcd/panel/power_reduce
 
     # Permissions for dvfs lock
     chown system system /sys/power/cpufreq_max_limit
