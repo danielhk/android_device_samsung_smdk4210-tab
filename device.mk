@@ -64,8 +64,6 @@ PRODUCT_COPY_FILES += \
 # Packages
 PRODUCT_PACKAGES += \
     com.android.future.usb.accessory \
-    hostapd \
-    hostapd_cli \
     librs_jni \
     libsurfaceflinger_client \
     libwpa_client \
