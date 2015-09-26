@@ -153,6 +153,7 @@ CONFIG_P2P			 := true
 CONFIG_P2P_MANAGER		 := true
 CONFIG_WPS			 := true
 CONFIG_WIFI_DISPLAY		 := true
+USES_SINGLE_WIFI_FW		 := true
 
 # Sepolicy
 BOARD_SEPOLICY_DIRS += \
