@@ -115,7 +115,4 @@
 
     <!-- Maximum number of supported users -->
     <integer name="config_multiuserMaximumUsers">5</integer>
-
-    <!-- Boolean indicating whether Softap requires reloading AP firmware, not for ath6kl chip -->
-    <bool name="config_wifiApFirmwareReload">false</bool>
 </resources>
