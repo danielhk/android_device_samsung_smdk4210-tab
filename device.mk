@@ -172,6 +172,7 @@ PRODUCT_TAGS += dalvik.gc.type-precise
 # Set default USB interface
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
     persist.sys.usb.config=mtp,adb \
+    persist.sys.isUsbOtgEnabled=true \
     persist.sys.root_access=3
 
 PRODUCT_COPY_FILES += \
