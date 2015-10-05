@@ -3,8 +3,8 @@ import init.smdk4210.bt.rc
 
 on init
     chmod 0701 /mnt/media_rw
-    mkdir /mnt/media_rw/sdcard1		0775 system system
-    mkdir /mnt/media_rw/usbdisk0	0775 system system
+    mkdir /mnt/media_rw/sdcard1		0775 media_rw media_rw
+    mkdir /mnt/media_rw/usbdisk0	0770 media_rw media_rw
 
     mkdir /mnt/shell/emulated	0700	shell  shell
     mkdir /storage		0550	system sdcard_r
