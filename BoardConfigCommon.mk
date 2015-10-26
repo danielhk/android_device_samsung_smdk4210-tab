@@ -42,10 +42,11 @@ TARGET_NO_BOOTLOADER := true
 TARGET_NO_RADIOIMAGE := true
 
 DEVICE_PACKAGE_OVERLAYS += device/samsung/smdk4210-tab/overlay
-TARGET_SPECIFIC_HEADER_PATH += device/samsung/smdk4210-tab/overlay/include
+#TARGET_SPECIFIC_HEADER_PATH += device/samsung/smdk4210-tab/overlay/include
 
-# linker support NON PIE 
+# linker options
 TARGET_ENABLE_NON_PIE_SUPPORT := true
+TARGET_BLOBS_BYPASS_SYMBOL_ERR := true
 
 # Init
 TARGET_PROVIDES_INIT := true
@@ -158,18 +159,6 @@ USES_SINGLE_WIFI_FW		 := true
 # Sepolicy
 BOARD_SEPOLICY_DIRS += \
     device/samsung/smdk4210-tab/sepolicy
-
-BOARD_SEPOLICY_UNION += \
-    device.te \
-    domain.te \
-    drmserver.te \
-    file.te \
-    file_contexts \
-    mediaserver.te \
-    rild.te \
-    system_server.te \
-    ueventd.te \
-    wpa_supplicant.te
 
 # Charging Mode (LPM)
 BOARD_CHARGING_MODE_BOOTING_LPM := "/sys/class/power_supply/battery/batt_lp_charging"

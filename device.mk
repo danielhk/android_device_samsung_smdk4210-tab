@@ -64,6 +64,7 @@ PRODUCT_COPY_FILES += \
 # Packages
 PRODUCT_PACKAGES += \
     com.android.future.usb.accessory \
+    libemoji \
     librs_jni \
     libsurfaceflinger_client \
     libwpa_client \
@@ -123,8 +124,7 @@ PRODUCT_PACKAGES += \
 # Filesystem management tools
 PRODUCT_PACKAGES += \
     make_ext4fs \
-    setup_fs \
-    static_busybox
+    setup_fs
 
 # These are the hardware-specific features
 PRODUCT_COPY_FILES += \
