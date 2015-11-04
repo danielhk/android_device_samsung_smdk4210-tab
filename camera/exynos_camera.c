@@ -59,8 +59,8 @@ struct exynos_camera_preset exynos_camera_presets_galaxytab[] = {
 		.metering = METERING_CENTER,
 		.params = {
 #ifdef TAB_P2
-			.preview_size_values = "720x480,640x384,640x360,640x480,320x240,528x432,176x144",
-			.preview_size = "640x384",
+			.preview_size_values = "1280x720,1024x768,1024x552,800x600,720x480,640x480,528x432,352x288,320x240,176x144",
+			.preview_size = "528x432",
 #else
 			.preview_size_values = "1280x720,1024x768,1024x576,800x600,720x480,640x480,528x432,352x288,320x240,176x144",
 			.preview_size = "640x480",
