@@ -68,7 +68,6 @@ PRODUCT_PACKAGES += \
     librs_jni \
     libsurfaceflinger_client \
     libwpa_client \
-    PerformanceControl \
     wpa_supplicant \
     wpa_supplicant.conf \
     macloader 
