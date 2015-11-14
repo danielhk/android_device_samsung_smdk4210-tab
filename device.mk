@@ -160,19 +160,18 @@ PRODUCT_CHARACTERISTICS := tablet
 
 # Graphics
 PRODUCT_PROPERTY_OVERRIDES += \
-    ro.zygote.disable_gl_preload=true \
-    ro.opengles.version=196609 \
-    hwui.render_dirty_regions=false \
-    ro.bq.gpu_to_cpu_unsupported=1 \
     drm.service.enable=true \
-    persist.panel.orientation=270
+    hwui.render_dirty_regions=false \
+    persist.panel.orientation=270 \
+    ro.bq.gpu_to_cpu_unsupported=1 \
+    ro.opengles.version=196609 \
+    ro.zygote.disable_gl_preload=true
 
 PRODUCT_TAGS += dalvik.gc.type-precise
 
 # Set default USB interface
 PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
     persist.sys.usb.config=mtp \
-    persist.sys.isUsbOtgEnabled=true \
     persist.sys.root_access=3
 
 PRODUCT_COPY_FILES += \
