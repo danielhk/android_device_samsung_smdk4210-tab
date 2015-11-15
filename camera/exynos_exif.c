@@ -43,14 +43,14 @@
  * FIXME: This EXIF implementation doesn't work very well, it needs to be fixed.
  */
 
-int exynos_exif_attributes_create_static(struct exynos_camera *exynos_camera,
+int exynos_exif_attributes_create_static(struct exynos_camera *camera,
 	exif_attribute_t *exif_attributes)
 {
 	unsigned char gps_version[] = { 0x02, 0x02, 0x00, 0x00 };
 	char property[PROPERTY_VALUE_MAX];
 	uint32_t av;
 
-	if (exynos_camera == NULL || exif_attributes == NULL)
+	if (camera == NULL || exif_attributes == NULL)
 		return -EINVAL;
 
 	// Device
@@ -103,7 +103,7 @@ int exynos_exif_attributes_create_static(struct exynos_camera *exynos_camera,
 	return 0;
 }
 
-int exynos_exif_attributes_create_gps(struct exynos_camera *exynos_camera,
+int exynos_exif_attributes_create_gps(struct exynos_camera *camera,
 	exif_attribute_t *exif_attributes)
 {
 	float gps_latitude_float, gps_longitude_float, gps_altitude_float;
@@ -115,16 +115,16 @@ int exynos_exif_attributes_create_gps(struct exynos_camera *exynos_camera,
 
 	struct tm time_info;
 
-	if (exynos_camera == NULL || exif_attributes == NULL)
+	if (camera == NULL || exif_attributes == NULL)
 		return -EINVAL;
 
-	gps_latitude_float = exynos_param_float_get(exynos_camera, "gps-latitude");
-	gps_longitude_float = exynos_param_float_get(exynos_camera, "gps-longitude");
-	gps_altitude_float = exynos_param_float_get(exynos_camera, "gps-altitude");
+	gps_latitude_float = exynos_param_float_get(camera, "gps-latitude");
+	gps_longitude_float = exynos_param_float_get(camera, "gps-longitude");
+	gps_altitude_float = exynos_param_float_get(camera, "gps-altitude");
 	if (gps_altitude_float == -1)
-		gps_altitude_float = (float) exynos_param_int_get(exynos_camera, "gps-altitude");
-	gps_timestamp_int = exynos_param_int_get(exynos_camera, "gps-timestamp");
-	gps_processing_method_string = exynos_param_string_get(exynos_camera, "gps-processing-method");
+		gps_altitude_float = (float) exynos_param_int_get(camera, "gps-altitude");
+	gps_timestamp_int = exynos_param_int_get(camera, "gps-timestamp");
+	gps_processing_method_string = exynos_param_string_get(camera, "gps-processing-method");
 
 	if (gps_latitude_float == -1 || gps_longitude_float == -1 ||
 		gps_altitude_float == -1 || gps_timestamp_int <= 0 ||
@@ -196,7 +196,7 @@ int exynos_exif_attributes_create_gps(struct exynos_camera *exynos_camera,
 	return 0;
 }
 
-int exynos_exif_attributes_create_params(struct exynos_camera *exynos_camera,
+int exynos_exif_attributes_create_params(struct exynos_camera *camera,
 	exif_attribute_t *exif_attributes)
 {
 	uint32_t av, tv, bv, sv, ev;
@@ -211,20 +211,20 @@ int exynos_exif_attributes_create_params(struct exynos_camera *exynos_camera,
 
 	int rc;
 
-	if (exynos_camera == NULL || exif_attributes == NULL)
+	if (camera == NULL || exif_attributes == NULL)
 		return -EINVAL;
 
 	// Picture size
-	exif_attributes->width = exynos_camera->picture_width;
-	exif_attributes->height = exynos_camera->picture_height;
+	exif_attributes->width = camera->picture_width;
+	exif_attributes->height = camera->picture_height;
 
 	// Thumbnail
-	exif_attributes->widthThumb = exynos_camera->jpeg_thumbnail_width;
-	exif_attributes->heightThumb = exynos_camera->jpeg_thumbnail_height;
+	exif_attributes->widthThumb = camera->jpeg_thumbnail_width;
+	exif_attributes->heightThumb = camera->jpeg_thumbnail_height;
 	exif_attributes->enableThumb = true;
 
 	// Orientation
-	rotation = exynos_param_int_get(exynos_camera, "rotation");
+	rotation = exynos_param_int_get(camera, "rotation");
 	switch (rotation) {
 		case 90:
 			exif_attributes->orientation = EXIF_ORIENTATION_90;
@@ -247,11 +247,11 @@ int exynos_exif_attributes_create_params(struct exynos_camera *exynos_camera,
 	strftime((char *) exif_attributes->date_time, sizeof(exif_attributes->date_time),
 		"%Y:%m:%d %H:%M:%S", time_info);
 
-	exif_attributes->focal_length.num = exynos_camera->camera_focal_length;
+	exif_attributes->focal_length.num = camera->camera_focal_length;
 	exif_attributes->focal_length.den = EXIF_DEF_FOCAL_LEN_DEN;
 
 	shutter_speed = 100;
-	rc = exynos_v4l2_g_ctrl(exynos_camera, 0, V4L2_CID_CAMERA_EXIF_TV,
+	rc = exynos_v4l2_g_ctrl(camera, 0, V4L2_CID_CAMERA_EXIF_TV,
 		&shutter_speed);
 	if (rc < 0)
 		ALOGE("%s: g ctrl failed!", __func__);
@@ -261,7 +261,7 @@ int exynos_exif_attributes_create_params(struct exynos_camera *exynos_camera,
 
 	/* the exposure_time value read from the camera doesn't work
 	 * exposure_time = shutter_speed;
-	 * rc = exynos_v4l2_g_ctrl(exynos_camera, 0, V4L2_CID_CAMERA_EXIF_EXPTIME,
+	 * rc = exynos_v4l2_g_ctrl(camera, 0, V4L2_CID_CAMERA_EXIF_EXPTIME,
 	 * 	&exposure_time);
 	 * if (rc < 0)
 	 *	ALOGE("%s: g ctrl failed!", __func__);
@@ -271,28 +271,28 @@ int exynos_exif_attributes_create_params(struct exynos_camera *exynos_camera,
 	exif_attributes->exposure_time.num = 1;
 	exif_attributes->exposure_time.den = APEX_SHUTTER_TO_EXPOSURE(shutter_speed);
 
-	rc = exynos_v4l2_g_ctrl(exynos_camera, 0, V4L2_CID_CAMERA_EXIF_ISO,
+	rc = exynos_v4l2_g_ctrl(camera, 0, V4L2_CID_CAMERA_EXIF_ISO,
 		&iso_speed);
 	if (rc < 0)
 		ALOGE("%s: g ctrl failed!", __func__);
 
 	exif_attributes->iso_speed_rating = iso_speed;
 
-	rc = exynos_v4l2_g_ctrl(exynos_camera, 0, V4L2_CID_CAMERA_EXIF_FLASH,
+	rc = exynos_v4l2_g_ctrl(camera, 0, V4L2_CID_CAMERA_EXIF_FLASH,
 		&flash_results);
 	if (rc < 0)
 		ALOGE("%s: g ctrl failed!", __func__);
 
 	exif_attributes->flash = flash_results;
 
-	rc = exynos_v4l2_g_ctrl(exynos_camera, 0, V4L2_CID_CAMERA_EXIF_BV,
+	rc = exynos_v4l2_g_ctrl(camera, 0, V4L2_CID_CAMERA_EXIF_BV,
 		(int *) &bv);
 	if (rc < 0) {
 		ALOGE("%s: g ctrl failed!", __func__);
 		goto bv_static;
 	}
 
-	rc = exynos_v4l2_g_ctrl(exynos_camera, 0, V4L2_CID_CAMERA_EXIF_EBV,
+	rc = exynos_v4l2_g_ctrl(camera, 0, V4L2_CID_CAMERA_EXIF_EBV,
 		(int *) &ev);
 	if (rc < 0) {
 		ALOGE("%s: g ctrl failed!", __func__);
@@ -302,7 +302,7 @@ int exynos_exif_attributes_create_params(struct exynos_camera *exynos_camera,
 	goto bv_ioctl;
 
 bv_static:
-	exposure = exynos_param_int_get(exynos_camera, "exposure-compensation");
+	exposure = exynos_param_int_get(camera, "exposure-compensation");
 	if (exposure < 0)
 		exposure = EV_DEFAULT;
 
@@ -318,7 +318,7 @@ bv_ioctl:
 	exif_attributes->brightness.num = bv;
 	exif_attributes->brightness.den = EXIF_DEF_APEX_DEN;
 
-	if (exynos_camera->scene_mode == SCENE_MODE_BEACH_SNOW) {
+	if (camera->scene_mode == SCENE_MODE_BEACH_SNOW) {
 		exif_attributes->exposure_bias.num = EXIF_DEF_APEX_DEN;
 		exif_attributes->exposure_bias.den = EXIF_DEF_APEX_DEN;
 	} else {
@@ -326,7 +326,7 @@ bv_ioctl:
 		exif_attributes->exposure_bias.den = EXIF_DEF_APEX_DEN;
 	}
 
-	switch (exynos_camera->camera_metering) {
+	switch (camera->camera_metering) {
 		case METERING_CENTER:
 			exif_attributes->metering_mode = EXIF_METERING_CENTER;
 			break;
@@ -341,13 +341,13 @@ bv_ioctl:
 			break;
 	}
 
-	if (exynos_camera->whitebalance == WHITE_BALANCE_AUTO ||
-		exynos_camera->whitebalance == WHITE_BALANCE_BASE)
+	if (camera->whitebalance == WHITE_BALANCE_AUTO ||
+		camera->whitebalance == WHITE_BALANCE_BASE)
 		exif_attributes->white_balance = EXIF_WB_AUTO;
 	else
 		exif_attributes->white_balance = EXIF_WB_MANUAL;
 
-	switch (exynos_camera->scene_mode) {
+	switch (camera->scene_mode) {
 		case SCENE_MODE_PORTRAIT:
 			exif_attributes->scene_capture_type = EXIF_SCENE_PORTRAIT;
 			break;
@@ -362,7 +362,7 @@ bv_ioctl:
 			break;
 	}
 
-	rc = exynos_exif_attributes_create_gps(exynos_camera, exif_attributes);
+	rc = exynos_exif_attributes_create_gps(camera, exif_attributes);
 	if (rc < 0) {
 		ALOGE("%s: Failed to create GPS attributes", __func__);
 		return -1;
@@ -371,43 +371,94 @@ bv_ioctl:
 	return 0;
 }
 
-int exynos_exif_write_data(void *exif_data, unsigned short tag,
-	unsigned short type, unsigned int count, int *offset, void *start,
-	void *data, int length)
+/*
+ * private member functions
+ */
+void exynos_exif_write_data_i(unsigned char **pCur,		// short
+                              uint16_t tag,
+                              uint32_t count,
+                              uint32_t value)
 {
-	unsigned char *pointer;
-	int size;
+	uint16_t type = EXIF_TYPE_SHORT;
 
-	if (exif_data == NULL || data == NULL || length <= 0)
-		return -EINVAL;
-
-	pointer = (unsigned char *) exif_data;
-
-	memcpy(pointer, &tag, sizeof(tag));
-	pointer += sizeof(tag);
-
-	memcpy(pointer, &type, sizeof(type));
-	pointer += sizeof(type);
-
-	memcpy(pointer, &count, sizeof(count));
-	pointer += sizeof(count);
-
-	if (offset != NULL && start != NULL) {
-		memcpy(pointer, offset, sizeof(*offset));
-		pointer += sizeof(*offset);
-
-		memcpy((void *) ((int) start + *offset), data, count * length);
-		*offset += count * length;
-	} else {
-		memcpy(pointer, data, count * length);
-		pointer += 4;
-	}
-
-	size = (int) pointer - (int) exif_data;
-	return size;
+	memcpy(*pCur, &tag, 2);		*pCur += 2;
+	memcpy(*pCur, &type, 2);	*pCur += 2;
+	memcpy(*pCur, &count, 4);	*pCur += 4;
+	memcpy(*pCur, &value, 4);	*pCur += 4;
 }
 
-int exynos_exif_create(struct exynos_camera *exynos_camera,
+void exynos_exif_write_data_l(unsigned char **pCur,		// long
+                              uint16_t tag,
+                              uint32_t count,
+                              uint32_t value)
+{
+	uint16_t type = EXIF_TYPE_LONG;
+
+	memcpy(*pCur, &tag, 2);		*pCur += 2;
+	memcpy(*pCur, &type, 2);	*pCur += 2;
+	memcpy(*pCur, &count, 4);	*pCur += 4;
+	memcpy(*pCur, &value, 4);	*pCur += 4;
+}
+
+void exynos_exif_write_data_u(unsigned char **pCur,		// undefined
+                              uint16_t tag,
+                              uint32_t count,
+                              unsigned char *pValue)
+{
+	char buf[4] = { 0,};
+	uint16_t type = EXIF_TYPE_UNDEFINED;
+
+	memcpy(buf, pValue, count);
+	memcpy(*pCur, &tag, 2);		*pCur += 2;
+	memcpy(*pCur, &type, 2);	*pCur += 2;
+	memcpy(*pCur, &count, 4);	*pCur += 4;
+	memcpy(*pCur, buf, 4);		*pCur += 4;
+}
+
+void exynos_exif_write_data_b(unsigned char **pCur,		// byte
+                              uint16_t tag,
+                              uint16_t type,
+                              uint32_t count,
+                              unsigned char *pValue)
+{
+	memcpy(*pCur, &tag, 2);		*pCur += 2;
+	memcpy(*pCur, &type, 2);	*pCur += 2;
+	memcpy(*pCur, &count, 4);	*pCur += 4;
+	memcpy(*pCur, pValue, count);	*pCur += count;
+}
+
+void exynos_exif_write_data_c(unsigned char **pCur,		// ascii
+                              uint16_t tag,
+                              uint32_t count,
+                              unsigned char *pValue,
+                              uint32_t *offset,
+                              unsigned char *start)
+{
+	uint16_t type = EXIF_TYPE_ASCII;
+
+	memcpy(*pCur, &tag, 2);		*pCur += 2;
+	memcpy(*pCur, &type, 2);	*pCur += 2;
+	memcpy(*pCur, &count, 4);	*pCur += 4;
+	memcpy(*pCur, offset, 4);	*pCur += 4;
+	memcpy(start + *offset, pValue, count);	*offset += count;
+}
+
+void exynos_exif_write_data_r(unsigned char **pCur,	// rational
+                              uint16_t tag,		// offest+=8*count
+                              uint16_t type,
+                              uint32_t count,
+                              rational_t *pValue,
+                              uint32_t *offset,
+                              unsigned char *start)
+{
+	memcpy(*pCur, &tag, 2);		*pCur += 2;
+	memcpy(*pCur, &type, 2);	*pCur += 2;
+	memcpy(*pCur, &count, 4);	*pCur += 4;
+	memcpy(*pCur, offset, 4);	*pCur += 4;
+	memcpy(start + *offset, pValue, 8 * count);	*offset += 8 * count;
+}
+
+int exynos_exif_create(struct exynos_camera *camera,
 	exif_attribute_t *exif_attributes,
 	camera_memory_t *jpeg_thumbnail_data_memory, int jpeg_thumbnail_size,
 	camera_memory_t **exif_data_memory_p, int *exif_size_p)
@@ -418,8 +469,8 @@ int exynos_exif_create(struct exynos_camera *exynos_camera,
 	unsigned char exif_marker[] = { 0x45, 0x78, 0x69, 0x66, 0x00, 0x00 };
 	unsigned char tiff_marker[] = { 0x49, 0x49, 0x2A, 0x00, 0x08, 0x00, 0x00, 0x00 };
 
-	unsigned char user_comment_code[] = { 0x41, 0x53, 0x43, 0x49, 0x49, 0x0, 0x0, 0x0 };
-	unsigned char exif_ascii_prefix[] = { 0x41, 0x53, 0x43, 0x49, 0x49, 0x0, 0x0, 0x0 };
+	unsigned char user_comment_code[] = { 0x00, 0x00, 0x00, 0x49, 0x49, 0x43, 0x53, 0x41 };
+	unsigned char exif_ascii_prefix[] = { 0x41, 0x53, 0x43, 0x49, 0x49, 0x00, 0x00, 0x00 };
 
 	camera_memory_t *exif_data_memory;
 	void *exif_data;
@@ -438,15 +489,15 @@ int exynos_exif_create(struct exynos_camera *exynos_camera,
 
 	unsigned int value;
 
-	if (exynos_camera == NULL || exif_attributes == NULL ||
+	if (camera == NULL || exif_attributes == NULL ||
 		jpeg_thumbnail_data_memory == NULL || jpeg_thumbnail_size <= 0 ||
 		exif_data_memory_p == NULL || exif_size_p == NULL)
 		return -EINVAL;
 
 	exif_data_size = EXIF_FILE_SIZE + jpeg_thumbnail_size;
 
-	if (exynos_camera->callbacks.request_memory != NULL) {
-		exif_data_memory = exynos_camera->callbacks.request_memory(-1,
+	if (camera->callbacks.request_memory != NULL) {
+		exif_data_memory = camera->callbacks.request_memory(-1,
 			exif_data_size, 1, 0);
 		if (exif_data_memory == NULL) {
 			ALOGE("%s: exif memory request failed!", __func__);
@@ -456,12 +507,12 @@ int exynos_exif_create(struct exynos_camera *exynos_camera,
 		ALOGE("%s: No memory request function!", __func__);
 		goto error;
 	}
-
 	exif_data = exif_data_memory->data;
 	memset(exif_data, 0, exif_data_size);
 
 	pointer = (unsigned char *) exif_data;
 	exif_ifd_data_start = (void *) pointer;
+	ALOGD("%s: exif_data_size:%d, initial pointer:%p", __func__, exif_data_size, pointer);
 
 	// Skip 4 bytes for APP1 marker
 	pointer += 4;
@@ -484,53 +535,28 @@ int exynos_exif_create(struct exynos_camera *exynos_camera,
 	pointer += NUM_SIZE;
 
 	offset = 8 + NUM_SIZE + value * IFD_SIZE + OFFSET_SIZE;
-
-	// Write EXIF data
-	count = exynos_exif_write_data(pointer, EXIF_TAG_IMAGE_WIDTH,
-		EXIF_TYPE_LONG, 1, NULL, NULL, &exif_attributes->width, sizeof(exif_attributes->width));
-	pointer += count;
-
-	count = exynos_exif_write_data(pointer, EXIF_TAG_IMAGE_HEIGHT,
-		EXIF_TYPE_LONG, 1, NULL, NULL, &exif_attributes->height, sizeof(exif_attributes->height));
-	pointer += count;
-
-	count = exynos_exif_write_data(pointer, EXIF_TAG_MAKE,
-		EXIF_TYPE_ASCII, strlen((char *) exif_attributes->maker) + 1,
-		&offset, exif_ifd_start, &exif_attributes->maker, sizeof(char));
-	pointer += count;
-
-	count = exynos_exif_write_data(pointer, EXIF_TAG_MODEL,
-		EXIF_TYPE_ASCII, strlen((char *) exif_attributes->model) + 1,
-		&offset, exif_ifd_start, &exif_attributes->model, sizeof(char));
-	pointer += count;
-
-	count = exynos_exif_write_data(pointer, EXIF_TAG_ORIENTATION,
-		EXIF_TYPE_SHORT, 1, NULL, NULL, &exif_attributes->orientation, sizeof(exif_attributes->orientation));
-	pointer += count;
-
-	count = exynos_exif_write_data(pointer, EXIF_TAG_SOFTWARE,
-		EXIF_TYPE_ASCII, strlen((char *) exif_attributes->software) + 1,
-		&offset, exif_ifd_start, &exif_attributes->software, sizeof(char));
-	pointer += count;
-
-	count = exynos_exif_write_data(pointer, EXIF_TAG_DATE_TIME,
-		EXIF_TYPE_ASCII, 20, &offset, exif_ifd_start, &exif_attributes->date_time, sizeof(char));
-	pointer += count;
-
-	count = exynos_exif_write_data(pointer, EXIF_TAG_YCBCR_POSITIONING,
-		EXIF_TYPE_SHORT, 1, NULL, NULL, &exif_attributes->ycbcr_positioning, sizeof(exif_attributes->ycbcr_positioning));
-	pointer += count;
-
-	count = exynos_exif_write_data(pointer, EXIF_TAG_EXIF_IFD_POINTER,
-		EXIF_TYPE_LONG, 1, NULL, NULL, &offset, sizeof(offset));
-	pointer += count;
+	ALOGD("%s: before NUM_0TH_IFD_TIFF, offset:%d,pointer:%p", __func__, offset,pointer);	// 122, 0x4298a014
+	// Write EXIF data	TAG(2)+TYPE(2)+CNT(2)+OFF(2)+START(2)+DATA(LEN)+LEN(2)+(LEN*CNT)
+	exynos_exif_write_data_l(&pointer, EXIF_TAG_IMAGE_WIDTH, 1, exif_attributes->width);
+	exynos_exif_write_data_l(&pointer, EXIF_TAG_IMAGE_HEIGHT, 1, exif_attributes->height);
+	exynos_exif_write_data_c(&pointer, EXIF_TAG_MAKE, strlen((char *) exif_attributes->maker) + 1,
+				 (unsigned char *)&exif_attributes->maker, &offset, exif_ifd_start);
+	exynos_exif_write_data_c(&pointer, EXIF_TAG_MODEL, strlen((char *) exif_attributes->model) + 1,
+				 (unsigned char *)&exif_attributes->model, &offset, exif_ifd_start);
+	exynos_exif_write_data_i(&pointer, EXIF_TAG_ORIENTATION, 1, exif_attributes->orientation);
+	exynos_exif_write_data_c(&pointer, EXIF_TAG_SOFTWARE, strlen((char *) exif_attributes->software) + 1,
+				 (unsigned char *)&exif_attributes->software, &offset, exif_ifd_start);
+	exynos_exif_write_data_c(&pointer, EXIF_TAG_DATE_TIME, 20,
+				 (unsigned char *)&exif_attributes->date_time, &offset, exif_ifd_start);
+	exynos_exif_write_data_i(&pointer, EXIF_TAG_YCBCR_POSITIONING, 1, exif_attributes->ycbcr_positioning);
+	exynos_exif_write_data_l(&pointer, EXIF_TAG_EXIF_IFD_POINTER, 1, offset);
 
 	if (exif_attributes->enableGps) {
 		exif_ifd_gps = (void *) pointer;
 		pointer += IFD_SIZE;
 	}
-
 	exif_ifd_thumb = (void *) pointer;
+	ALOGD("%s: after NUM_0TH_IFD_TIFF, exif_ifd_thub=offset:%d,pointer:%p", __func__, offset,pointer); // 171, 0x4298a080
 	pointer += OFFSET_SIZE;
 
 	pointer = (unsigned char *) exif_ifd_start;
@@ -539,110 +565,55 @@ int exynos_exif_create(struct exynos_camera *exynos_camera,
 	value = NUM_0TH_IFD_EXIF;
 	memcpy(pointer, &value, NUM_SIZE);
 	pointer += NUM_SIZE;
-
+	ALOGD("%s: after NUM_0TH_IFD_TIFF, exif_ifd_thub=offset:%d,pointer:%p", __func__, offset,pointer); //
 	offset += NUM_SIZE + NUM_0TH_IFD_EXIF * IFD_SIZE + OFFSET_SIZE;
+	exynos_exif_write_data_r(&pointer, EXIF_TAG_EXPOSURE_TIME, EXIF_TYPE_RATIONAL, 1,
+				 (rational_t *)&exif_attributes->exposure_time, &offset, exif_ifd_start);
+	exynos_exif_write_data_r(&pointer, EXIF_TAG_FNUMBER, EXIF_TYPE_RATIONAL, 1,
+				 (rational_t *)&exif_attributes->fnumber, &offset, exif_ifd_start);
+	exynos_exif_write_data_i(&pointer, EXIF_TAG_EXPOSURE_PROGRAM, 1, exif_attributes->exposure_program);
+	exynos_exif_write_data_i(&pointer, EXIF_TAG_ISO_SPEED_RATING, 1, exif_attributes->iso_speed_rating);
+	exynos_exif_write_data_u(&pointer, EXIF_TAG_EXIF_VERSION, 4, exif_attributes->exif_version);
+	exynos_exif_write_data_c(&pointer, EXIF_TAG_DATE_TIME_ORG, 20,
+				 (unsigned char *)&exif_attributes->date_time, &offset, exif_ifd_start);
+	exynos_exif_write_data_c(&pointer, EXIF_TAG_DATE_TIME_DIGITIZE, 20,
+				 (unsigned char *)&exif_attributes->date_time, &offset, exif_ifd_start);
+	exynos_exif_write_data_r(&pointer, EXIF_TAG_SHUTTER_SPEED, EXIF_TYPE_SRATIONAL, 1,
+				 (rational_t *)&exif_attributes->shutter_speed, &offset, exif_ifd_start);
+	exynos_exif_write_data_r(&pointer, EXIF_TAG_APERTURE, EXIF_TYPE_RATIONAL, 1,
+				 (rational_t *)&exif_attributes->aperture, &offset, exif_ifd_start);
+	exynos_exif_write_data_r(&pointer, EXIF_TAG_BRIGHTNESS, EXIF_TYPE_SRATIONAL, 1,
+				 (rational_t *)&exif_attributes->brightness, &offset, exif_ifd_start);
+	exynos_exif_write_data_r(&pointer, EXIF_TAG_EXPOSURE_BIAS, EXIF_TYPE_SRATIONAL, 1,
+				 (rational_t *)&exif_attributes->exposure_bias, &offset, exif_ifd_start);
+	exynos_exif_write_data_r(&pointer, EXIF_TAG_MAX_APERTURE, EXIF_TYPE_RATIONAL, 1,
+				 (rational_t *)&exif_attributes->max_aperture, &offset, exif_ifd_start);
+	exynos_exif_write_data_i(&pointer, EXIF_TAG_METERING_MODE, 1, exif_attributes->metering_mode);
+	exynos_exif_write_data_i(&pointer, EXIF_TAG_FLASH, 1, exif_attributes->flash);
+	exynos_exif_write_data_r(&pointer, EXIF_TAG_FOCAL_LENGTH, EXIF_TYPE_RATIONAL, 1,
+				 (rational_t *)&exif_attributes->focal_length, &offset, exif_ifd_start);
 
-	count = exynos_exif_write_data(pointer, EXIF_TAG_EXPOSURE_TIME,
-		EXIF_TYPE_RATIONAL, 1, &offset, exif_ifd_start, &exif_attributes->exposure_time, sizeof(exif_attributes->exposure_time));
-	pointer += count;
-
-	count = exynos_exif_write_data(pointer, EXIF_TAG_FNUMBER,
-		EXIF_TYPE_RATIONAL, 1, &offset, exif_ifd_start, &exif_attributes->fnumber, sizeof(exif_attributes->fnumber));
-	pointer += count;
-
-	count = exynos_exif_write_data(pointer, EXIF_TAG_EXPOSURE_PROGRAM,
-		EXIF_TYPE_SHORT, 1, NULL, NULL, &exif_attributes->exposure_program, sizeof(exif_attributes->exposure_program));
-	pointer += count;
-
-	count = exynos_exif_write_data(pointer, EXIF_TAG_ISO_SPEED_RATING,
-		EXIF_TYPE_SHORT, 1, NULL, NULL, &exif_attributes->iso_speed_rating, sizeof(exif_attributes->iso_speed_rating));
-	pointer += count;
-
-	count = exynos_exif_write_data(pointer, EXIF_TAG_EXIF_VERSION,
-		EXIF_TYPE_UNDEFINED, 4, NULL, NULL, &exif_attributes->exif_version, sizeof(char));
-	pointer += count;
-
-	count = exynos_exif_write_data(pointer, EXIF_TAG_DATE_TIME_ORG,
-		EXIF_TYPE_ASCII, 20, &offset, exif_ifd_start, &exif_attributes->date_time, sizeof(char));
-	pointer += count;
-
-	count = exynos_exif_write_data(pointer, EXIF_TAG_DATE_TIME_DIGITIZE,
-		EXIF_TYPE_ASCII, 20, &offset, exif_ifd_start, &exif_attributes->date_time, sizeof(char));
-	pointer += count;
-
-	count = exynos_exif_write_data(pointer, EXIF_TAG_SHUTTER_SPEED,
-		EXIF_TYPE_SRATIONAL, 1, &offset, exif_ifd_start, &exif_attributes->shutter_speed, sizeof(exif_attributes->shutter_speed));
-	pointer += count;
-
-	count = exynos_exif_write_data(pointer, EXIF_TAG_APERTURE,
-		EXIF_TYPE_RATIONAL, 1, &offset, exif_ifd_start, &exif_attributes->aperture, sizeof(exif_attributes->aperture));
-	pointer += count;
-
-	count = exynos_exif_write_data(pointer, EXIF_TAG_BRIGHTNESS,
-		EXIF_TYPE_SRATIONAL, 1, &offset, exif_ifd_start, &exif_attributes->brightness, sizeof(exif_attributes->brightness));
-	pointer += count;
-
-	count = exynos_exif_write_data(pointer, EXIF_TAG_EXPOSURE_BIAS,
-		EXIF_TYPE_SRATIONAL, 1, &offset, exif_ifd_start, &exif_attributes->exposure_bias, sizeof(exif_attributes->exposure_bias));
-	pointer += count;
-
-	count = exynos_exif_write_data(pointer, EXIF_TAG_MAX_APERTURE,
-		EXIF_TYPE_RATIONAL, 1, &offset, exif_ifd_start, &exif_attributes->max_aperture, sizeof(exif_attributes->max_aperture));
-	pointer += count;
-
-	count = exynos_exif_write_data(pointer, EXIF_TAG_METERING_MODE,
-		EXIF_TYPE_SHORT, 1, NULL, NULL, &exif_attributes->metering_mode, sizeof(exif_attributes->metering_mode));
-	pointer += count;
-
-	count = exynos_exif_write_data(pointer, EXIF_TAG_FLASH,
-		EXIF_TYPE_SHORT, 1, NULL, NULL, &exif_attributes->flash, sizeof(exif_attributes->flash));
-	pointer += count;
-
-	count = exynos_exif_write_data(pointer, EXIF_TAG_FOCAL_LENGTH,
-		EXIF_TYPE_RATIONAL, 1, &offset, exif_ifd_start, &exif_attributes->focal_length, sizeof(exif_attributes->focal_length));
-	pointer += count;
-
-	value = strlen((char *) exif_attributes->user_comment) + 1;
+	value = strlen((char *)exif_attributes->user_comment) + 1;
 	memmove(exif_attributes->user_comment + sizeof(user_comment_code), exif_attributes->user_comment, value);
 	memcpy(exif_attributes->user_comment, user_comment_code, sizeof(user_comment_code));
-
-	count = exynos_exif_write_data(pointer, EXIF_TAG_USER_COMMENT,
-		EXIF_TYPE_UNDEFINED, value + sizeof(user_comment_code), &offset, exif_ifd_start, &exif_attributes->user_comment, sizeof(char));
-	pointer += count;
-
-	count = exynos_exif_write_data(pointer, EXIF_TAG_COLOR_SPACE,
-		EXIF_TYPE_SHORT, 1, NULL, NULL, &exif_attributes->color_space, sizeof(exif_attributes->color_space));
-	pointer += count;
-
-	count = exynos_exif_write_data(pointer, EXIF_TAG_PIXEL_X_DIMENSION,
-		EXIF_TYPE_LONG, 1, NULL, NULL, &exif_attributes->width, sizeof(exif_attributes->width));
-	pointer += count;
-
-	count = exynos_exif_write_data(pointer, EXIF_TAG_PIXEL_Y_DIMENSION,
-		EXIF_TYPE_LONG, 1, NULL, NULL, &exif_attributes->height, sizeof(exif_attributes->height));
-	pointer += count;
-
-	count = exynos_exif_write_data(pointer, EXIF_TAG_EXPOSURE_MODE,
-		EXIF_TYPE_SHORT, 1, NULL, NULL, &exif_attributes->exposure_mode, sizeof(exif_attributes->exposure_mode));
-	pointer += count;
-
-	count = exynos_exif_write_data(pointer, EXIF_TAG_WHITE_BALANCE,
-		EXIF_TYPE_SHORT, 1, NULL, NULL, &exif_attributes->white_balance, sizeof(exif_attributes->white_balance));
-	pointer += count;
-
-	count = exynos_exif_write_data(pointer, EXIF_TAG_SCENCE_CAPTURE_TYPE,
-		EXIF_TYPE_SHORT, 1, NULL, NULL, &exif_attributes->scene_capture_type, sizeof(exif_attributes->scene_capture_type));
-	pointer += count;
+	exynos_exif_write_data_c(&pointer, EXIF_TAG_USER_COMMENT, value + sizeof(user_comment_code),
+				 exif_attributes->user_comment, &offset, exif_ifd_start);
+	exynos_exif_write_data_i(&pointer, EXIF_TAG_COLOR_SPACE, 1, exif_attributes->color_space);
+	exynos_exif_write_data_l(&pointer, EXIF_TAG_PIXEL_X_DIMENSION, 1, exif_attributes->width);
+	exynos_exif_write_data_l(&pointer, EXIF_TAG_PIXEL_Y_DIMENSION, 1, exif_attributes->height);
+	exynos_exif_write_data_i(&pointer, EXIF_TAG_EXPOSURE_MODE, 1, exif_attributes->exposure_mode);
+	exynos_exif_write_data_i(&pointer, EXIF_TAG_WHITE_BALANCE, 1, exif_attributes->white_balance);
+	exynos_exif_write_data_i(&pointer, EXIF_TAG_SCENCE_CAPTURE_TYPE, 1, exif_attributes->scene_capture_type);
 
 	value = 0;
 	memcpy(pointer, &value, OFFSET_SIZE);
 	pointer += OFFSET_SIZE;
-
+	ALOGD("%s: after NUM_0TH_IFD_EXIF, offset:%d,pointer:%p", __func__, offset,pointer); // 567, 0x4298a1c3
 	// GPS
 	if (exif_attributes->enableGps) {
+		ALOGD("%s: exif: GPS enabled", __func__);
 		pointer = (unsigned char *) exif_ifd_gps;
-		count = exynos_exif_write_data(pointer, EXIF_TAG_GPS_IFD_POINTER,
-			EXIF_TYPE_LONG, 1, NULL, NULL, &offset, sizeof(offset));
+		exynos_exif_write_data_l(&pointer, EXIF_TAG_GPS_IFD_POINTER, 1, offset);
 
 		pointer = exif_ifd_start + offset;
 
@@ -655,38 +626,20 @@ int exynos_exif_create(struct exynos_camera *exynos_camera,
 		pointer += NUM_SIZE;
 
 		offset += NUM_SIZE + value * IFD_SIZE + OFFSET_SIZE;
-
-		count = exynos_exif_write_data(pointer, EXIF_TAG_GPS_VERSION_ID,
-			EXIF_TYPE_BYTE, 4, NULL, NULL, &exif_attributes->gps_version_id, sizeof(char));
-		pointer += count;
-
-		count = exynos_exif_write_data(pointer, EXIF_TAG_GPS_LATITUDE_REF,
-			EXIF_TYPE_ASCII, 2, NULL, NULL, &exif_attributes->gps_latitude_ref, sizeof(char));
-		pointer += count;
-
-		count = exynos_exif_write_data(pointer, EXIF_TAG_GPS_LATITUDE,
-			EXIF_TYPE_RATIONAL, 3, &offset, exif_ifd_start, &exif_attributes->gps_latitude, sizeof(exif_attributes->gps_latitude[0]));
-		pointer += count;
-
-		count = exynos_exif_write_data(pointer, EXIF_TAG_GPS_LONGITUDE_REF,
-			EXIF_TYPE_ASCII, 2, NULL, NULL, &exif_attributes->gps_longitude_ref, sizeof(char));
-		pointer += count;
-
-		count = exynos_exif_write_data(pointer, EXIF_TAG_GPS_LONGITUDE,
-			EXIF_TYPE_RATIONAL, 3, &offset, exif_ifd_start, &exif_attributes->gps_longitude, sizeof(exif_attributes->gps_longitude[0]));
-		pointer += count;
-
-		count = exynos_exif_write_data(pointer, EXIF_TAG_GPS_ALTITUDE_REF,
-			EXIF_TYPE_BYTE, 1, NULL, NULL, &exif_attributes->gps_altitude_ref, sizeof(char));
-		pointer += count;
-
-		count = exynos_exif_write_data(pointer, EXIF_TAG_GPS_ALTITUDE,
-			EXIF_TYPE_RATIONAL, 1, &offset, exif_ifd_start, &exif_attributes->gps_altitude, sizeof(exif_attributes->gps_altitude));
-		pointer += count;
-
-		count = exynos_exif_write_data(pointer, EXIF_TAG_GPS_TIMESTAMP,
-			EXIF_TYPE_RATIONAL, 3, &offset, exif_ifd_start, &exif_attributes->gps_timestamp, sizeof(exif_attributes->gps_timestamp[0]));
-		pointer += count;
+		exynos_exif_write_data_b(&pointer, EXIF_TAG_GPS_VERSION_ID, EXIF_TYPE_BYTE, 4, exif_attributes->gps_version_id);
+		exynos_exif_write_data_b(&pointer, EXIF_TAG_GPS_LATITUDE_REF, EXIF_TYPE_ASCII, 2, exif_attributes->gps_latitude_ref);
+		exynos_exif_write_data_r(&pointer, EXIF_TAG_GPS_LATITUDE, EXIF_TYPE_RATIONAL, 3,
+					 (rational_t *)&exif_attributes->gps_latitude, &offset, exif_ifd_start);
+		exynos_exif_write_data_b(&pointer, EXIF_TAG_GPS_LONGITUDE_REF, EXIF_TYPE_ASCII, 2,
+					 (unsigned char *)&exif_attributes->gps_longitude_ref);
+		exynos_exif_write_data_r(&pointer, EXIF_TAG_GPS_LONGITUDE, EXIF_TYPE_RATIONAL, 3,
+					 (rational_t *)&exif_attributes->gps_longitude, &offset, exif_ifd_start);
+		exynos_exif_write_data_b(&pointer, EXIF_TAG_GPS_ALTITUDE_REF, EXIF_TYPE_BYTE, 1,
+					 (unsigned char *)&exif_attributes->gps_altitude_ref);
+		exynos_exif_write_data_r(&pointer, EXIF_TAG_GPS_ALTITUDE, EXIF_TYPE_RATIONAL, 1,
+					 (rational_t *)&exif_attributes->gps_altitude, &offset, exif_ifd_start);
+		exynos_exif_write_data_r(&pointer, EXIF_TAG_GPS_TIMESTAMP, EXIF_TYPE_RATIONAL, 3,
+					 (rational_t *)&exif_attributes->gps_timestamp, &offset, exif_ifd_start);
 
 		value = strlen((char *) exif_attributes->gps_processing_method);
 		if (value > 0) {
@@ -694,28 +647,25 @@ int exynos_exif_create(struct exynos_camera *exynos_camera,
 
 			data = calloc(1, value + sizeof(exif_ascii_prefix));
 			memcpy(data, &exif_ascii_prefix, sizeof(exif_ascii_prefix));
-			memcpy((void *) ((int) data + (int) sizeof(exif_ascii_prefix)), exif_attributes->gps_processing_method, value);
-
-			count = exynos_exif_write_data(pointer, EXIF_TAG_GPS_PROCESSING_METHOD,
-				EXIF_TYPE_UNDEFINED, value + sizeof(exif_ascii_prefix), &offset, exif_ifd_start, data, sizeof(char));
-			pointer += count;
-
+			memcpy((void *) ((int) data + (int) sizeof(exif_ascii_prefix)),
+					 exif_attributes->gps_processing_method, value);
+			exynos_exif_write_data_c(&pointer, EXIF_TAG_GPS_PROCESSING_METHOD, value + sizeof(exif_ascii_prefix),
+						 data, &offset, exif_ifd_start);
 			free(data);
 		}
-
-		count = exynos_exif_write_data(pointer, EXIF_TAG_GPS_DATESTAMP,
-				EXIF_TYPE_ASCII, 11, &offset, exif_ifd_start, &exif_attributes->gps_datestamp, 1);
-		pointer += count;
+		exynos_exif_write_data_c(&pointer, EXIF_TAG_GPS_DATESTAMP, 11,
+					 (unsigned char *)&exif_attributes->gps_altitude_ref, &offset, exif_ifd_start);
 
 		value = 0;
 		memcpy(pointer, &value, OFFSET_SIZE);
 		pointer += OFFSET_SIZE;
+		ALOGD("%s: after GPS, pointer:%p", __func__, pointer);
 	}
 
 	if (exif_attributes->enableThumb && jpeg_thumbnail_data_memory != NULL && jpeg_thumbnail_size > 0) {
 		exif_thumb_size = (unsigned int) jpeg_thumbnail_size;
 		exif_thumb_data = (void *) jpeg_thumbnail_data_memory->data;
-
+		ALOGD("%s: into Thumb enabled, offset:%d,pointer:%p", __func__, offset, pointer); // 567, 0x4298a1c3
 		value = offset;
 		memcpy(exif_ifd_thumb, &value, OFFSET_SIZE);
 
@@ -726,42 +676,17 @@ int exynos_exif_create(struct exynos_camera *exynos_camera,
 		pointer += NUM_SIZE;
 
 		offset += NUM_SIZE + NUM_1TH_IFD_TIFF * IFD_SIZE + OFFSET_SIZE;
-
-		count = exynos_exif_write_data(pointer, EXIF_TAG_IMAGE_WIDTH,
-				EXIF_TYPE_LONG, 1, NULL, NULL, &exif_attributes->widthThumb, sizeof(exif_attributes->widthThumb));
-		pointer += count;
-
-		count = exynos_exif_write_data(pointer, EXIF_TAG_IMAGE_HEIGHT,
-				EXIF_TYPE_LONG, 1, NULL, NULL, &exif_attributes->heightThumb, sizeof(exif_attributes->heightThumb));
-		pointer += count;
-
-		count = exynos_exif_write_data(pointer, EXIF_TAG_COMPRESSION_SCHEME,
-				EXIF_TYPE_SHORT, 1, NULL, NULL, &exif_attributes->compression_scheme, sizeof(exif_attributes->compression_scheme));
-		pointer += count;
-
-		count = exynos_exif_write_data(pointer, EXIF_TAG_ORIENTATION,
-				EXIF_TYPE_SHORT, 1, NULL, NULL, &exif_attributes->orientation, sizeof(exif_attributes->orientation));
-		pointer += count;
-
-		count = exynos_exif_write_data(pointer, EXIF_TAG_X_RESOLUTION,
-				EXIF_TYPE_RATIONAL, 1, &offset, exif_ifd_start, &exif_attributes->x_resolution, sizeof(exif_attributes->x_resolution));
-		pointer += count;
-
-		count = exynos_exif_write_data(pointer, EXIF_TAG_Y_RESOLUTION,
-				EXIF_TYPE_RATIONAL, 1, &offset, exif_ifd_start, &exif_attributes->y_resolution, sizeof(exif_attributes->y_resolution));
-		pointer += count;
-
-		count = exynos_exif_write_data(pointer, EXIF_TAG_RESOLUTION_UNIT,
-				EXIF_TYPE_SHORT, 1, NULL, NULL, &exif_attributes->resolution_unit, sizeof(exif_attributes->resolution_unit));
-		pointer += count;
-
-		count = exynos_exif_write_data(pointer, EXIF_TAG_JPEG_INTERCHANGE_FORMAT,
-				EXIF_TYPE_LONG, 1, NULL, NULL, &offset, sizeof(offset));
-		pointer += count;
-
-		count = exynos_exif_write_data(pointer, EXIF_TAG_JPEG_INTERCHANGE_FORMAT_LEN,
-				EXIF_TYPE_LONG, 1, NULL, NULL, &exif_thumb_size, sizeof(exif_thumb_size));
-		pointer += count;
+		exynos_exif_write_data_l(&pointer, EXIF_TAG_IMAGE_WIDTH, 1, exif_attributes->widthThumb);
+		exynos_exif_write_data_l(&pointer, EXIF_TAG_IMAGE_HEIGHT, 1, exif_attributes->heightThumb);
+		exynos_exif_write_data_i(&pointer, EXIF_TAG_COMPRESSION_SCHEME, 1, exif_attributes->compression_scheme);
+		exynos_exif_write_data_i(&pointer, EXIF_TAG_ORIENTATION, 1, exif_attributes->orientation);
+		exynos_exif_write_data_r(&pointer, EXIF_TAG_X_RESOLUTION, EXIF_TYPE_RATIONAL, 1,
+					 (rational_t *)&exif_attributes->x_resolution, &offset, exif_ifd_start);
+		exynos_exif_write_data_r(&pointer, EXIF_TAG_Y_RESOLUTION, EXIF_TYPE_RATIONAL, 1,
+					 (rational_t *)&exif_attributes->y_resolution, &offset, exif_ifd_start);
+		exynos_exif_write_data_l(&pointer, EXIF_TAG_RESOLUTION_UNIT, 1, exif_attributes->resolution_unit);
+		exynos_exif_write_data_l(&pointer, EXIF_TAG_JPEG_INTERCHANGE_FORMAT, 1, offset);
+		exynos_exif_write_data_l(&pointer, EXIF_TAG_JPEG_INTERCHANGE_FORMAT_LEN, 1, exif_thumb_size);
 
 		value = 0;
 		memcpy(pointer, &value, OFFSET_SIZE);
@@ -775,7 +700,6 @@ int exynos_exif_create(struct exynos_camera *exynos_camera,
 		memcpy(exif_ifd_thumb, &value, OFFSET_SIZE);
 
 	}
-
 	pointer = (unsigned char *) exif_ifd_data_start;
 
 	memcpy(pointer, exif_app1_marker, sizeof(exif_app1_marker));
@@ -785,6 +709,7 @@ int exynos_exif_create(struct exynos_camera *exynos_camera,
 	value = exif_size - 2;
 	exif_app1_size[0] = (value >> 8) & 0xff;
 	exif_app1_size[1] = value & 0xff;
+	ALOGD("%s: **Finished** exif size:%d, offset:%d, pointer:%p", __func__, value, offset, pointer); //25248, 0x4298a002
 
 	memcpy(pointer, exif_app1_size, sizeof(exif_app1_size));
 
