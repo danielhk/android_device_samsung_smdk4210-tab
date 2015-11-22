@@ -1,5 +1,5 @@
 #
-# Copyright (C) 2012 The CyanogenMod Project
+# Copyright (C) 2015 The CyanogenMod Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -31,6 +31,5 @@ $(INSTALLED_BOOTIMAGE_TARGET): $(INSTALLED_KERNEL_TARGET) $(INTERNAL_RAMDISK_FIL
 $(INSTALLED_RECOVERYIMAGE_TARGET): $(INSTALLED_BOOTIMAGE_TARGET) $(recovery_uncompressed_ramdisk)
 	@echo "----- Making recovery image ------"
 	$(MAKE) -C $(KERNEL_SRC) O=$(KERNEL_OUT) ARCH=$(TARGET_ARCH) $(KERNEL_CROSS_COMPILE) CONFIG_INITRAMFS_SOURCE=$(recovery_uncompressed_ramdisk) $(TARGET_PREBUILT_INT_KERNEL_TYPE)
+	$(call build-recoveryimage-target, $@)
 	$(ACP) $(KERNEL_BIN) $@
-	@echo -e ${CL_INS}"Made recovery image: $@"${CL_RST}
-	$(hide) $(call assert-max-image-size,$@,$(BOARD_RECOVERYIMAGE_PARTITION_SIZE),raw)
