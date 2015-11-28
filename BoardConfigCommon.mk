@@ -46,6 +46,7 @@ TARGET_SPECIFIC_HEADER_PATH += device/samsung/smdk4210-tab/overlay/include
 
 # linker support NON PIE 
 TARGET_ENABLE_NON_PIE_SUPPORT := true
+TARGET_BLOBS_BYPASS_SYMBOL_ERR := true
 
 # Init
 TARGET_PROVIDES_INIT := true
