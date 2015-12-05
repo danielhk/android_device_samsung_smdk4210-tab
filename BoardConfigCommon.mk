@@ -70,6 +70,10 @@ BOARD_SYSTEMIMAGE_PARTITION_SIZE := 872415232
 BOARD_FLASH_BLOCK_SIZE := 1024
 TARGET_USERIMAGES_USE_EXT4 := true
 
+# Build Flags
+#BLOCK_BASED_OTA := false
+TARGET_LEGACY_GCC_VERSION := 4.8
+
 # Vold
 BOARD_VOLD_MAX_PARTITIONS := 12
 BOARD_VOLD_EMMC_SHARES_DEV_MAJOR := true
@@ -156,18 +160,6 @@ CONFIG_WIFI_DISPLAY		 := true
 # Sepolicy
 BOARD_SEPOLICY_DIRS += \
     device/samsung/smdk4210-tab/sepolicy
-
-BOARD_SEPOLICY_UNION += \
-    device.te \
-    domain.te \
-    drmserver.te \
-    file.te \
-    file_contexts \
-    mediaserver.te \
-    rild.te \
-    system_server.te \
-    ueventd.te \
-    wpa_supplicant.te
 
 # Charging Mode (LPM)
 BOARD_CHARGING_MODE_BOOTING_LPM := "/sys/class/power_supply/battery/batt_lp_charging"
