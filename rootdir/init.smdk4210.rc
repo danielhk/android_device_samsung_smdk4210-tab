@@ -1,5 +1,5 @@
 import init.smdk4210.usb.rc
-#import init.smdk4210.bt.rc
+import init.smdk4210.bt.rc
 
 on init
     mkdir /efs			0771	radio  system
