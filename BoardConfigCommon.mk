@@ -42,7 +42,7 @@ TARGET_NO_BOOTLOADER := true
 TARGET_NO_RADIOIMAGE := true
 
 DEVICE_PACKAGE_OVERLAYS += device/samsung/smdk4210-tab/overlay
-#TARGET_SPECIFIC_HEADER_PATH += device/samsung/smdk4210-tab/overlay/include
+TARGET_SPECIFIC_HEADER_PATH += device/samsung/smdk4210-tab/overlay/include
 
 # linker options
 TARGET_ENABLE_NON_PIE_SUPPORT := true
