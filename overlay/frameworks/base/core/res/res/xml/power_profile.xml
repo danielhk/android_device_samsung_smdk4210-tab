@@ -52,6 +52,7 @@
   <!-- Different CPU speeds as reported in
        /sys/devices/system/cpu/cpu0/cpufreq/stats/time_in_state -->
   <array name="cpu.speeds">
+      <value>1600000</value>
       <value>1400000</value>
       <value>1200000</value>
       <value>1000000</value>
@@ -68,6 +69,7 @@
 
   <!-- Power consumption at different speeds -->
   <array name="cpu.active">
+      <value>230.0</value>
       <value>200.0</value>
       <value>170.0</value>
       <value>140.0</value>
