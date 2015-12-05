@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
 /*
-** Copyright 2012 The CyanogenMod Project
+** Copyright 2015 The CyanogenMod Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
 ** you may not use this file except in compliance with the License.
@@ -115,7 +115,4 @@
 
     <!-- Maximum number of supported users -->
     <integer name="config_multiuserMaximumUsers">5</integer>
-
-    <!-- Boolean indicating whether Softap requires reloading AP firmware, not for ath6kl chip -->
-    <bool name="config_wifiApFirmwareReload">false</bool>
 </resources>
