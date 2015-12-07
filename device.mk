@@ -161,6 +161,10 @@ PRODUCT_CHARACTERISTICS := tablet
 PRODUCT_PROPERTY_OVERRIDES += \
     persist.sys.bluetooth.handsfree=hfp
 
+# disable Captive portal check
+PRODUCT_PROPERTY_OVERRIDES += \
+    ro.disable_captive_portal=1
+
 # Graphics
 PRODUCT_PROPERTY_OVERRIDES += \
     drm.service.enable=true \
