@@ -157,6 +157,10 @@ PRODUCT_PACKAGES += \
 
 PRODUCT_CHARACTERISTICS := tablet
 
+# BlueZ Customization
+PRODUCT_PROPERTY_OVERRIDES += \
+    persist.sys.bluetooth.handsfree=hfp
+
 # Graphics
 PRODUCT_PROPERTY_OVERRIDES += \
     drm.service.enable=true \
