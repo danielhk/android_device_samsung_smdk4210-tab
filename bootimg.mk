@@ -28,7 +28,7 @@ $(INSTALLED_BOOTIMAGE_TARGET): $(INSTALLED_KERNEL_TARGET) $(INTERNAL_RAMDISK_FIL
 	@echo -e ${CL_INS}"Made boot image: $@"${CL_RST}
 
 # we depend on the previous make target to insure that the two build serially
-$(INSTALLED_RECOVERYIMAGE_TARGET): $(INSTALLED_BOOTIMAGE_TARGET) $(recovery_uncompressed_ramdisk)
+$(INSTALLED_RECOVERYIMAGE_TARGET): $(INSTALLED_BOOTIMAGE_TARGET) $(recovery_ramdisk)
 	@echo "----- Making recovery image ------"
 	$(MAKE) -C $(KERNEL_SRC) O=$(KERNEL_OUT) ARCH=$(TARGET_ARCH) $(KERNEL_CROSS_COMPILE) CONFIG_INITRAMFS_SOURCE=$(recovery_uncompressed_ramdisk) $(TARGET_PREBUILT_INT_KERNEL_TYPE)
 	$(call build-recoveryimage-target, $@)
