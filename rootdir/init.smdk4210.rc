@@ -86,8 +86,8 @@ on post-fs-data
 
     # lcd
     chown system system /sys/class/backlight/panel/brightness
-#    chown system system /sys/class/backlight/panel/power_reduce
-#    chmod 0666          /sys/class/backlight/panel/power_reduce
+    chown system system /sys/class/lcd/panel/power_reduce
+    chmod 0666          /sys/class/lcd/panel/power_reduce
 
     # Permissions for dvfs lock
     chown system system /sys/power/cpufreq_max_limit
@@ -116,12 +116,12 @@ on post-fs-data
     write /sys/class/mdnie/mdnie/mode 0
 
     # uart_sel and usb_sel
-    chown system radio /sys/class/sec/sec_switch/uart_sel
-    chown system radio /sys/class/sec/sec_switch/usb_sel
+    chown system radio /sys/class/sec/switch/uart_sel
+    chown system radio /sys/class/sec/switch/usb_sel
 
     # radio
     chown system radio /sys/devices/platform/s5p-ehci/ehci_power
-    chown system radio /sys/devices/platform/s5p-ehci/ehci_runtime
+    #chown system radio /sys/devices/platform/s5p-ehci/ehci_runtime
 
     # sensors
     chown system system /sys/class/sensors/accelerometer_sensor/calibration
