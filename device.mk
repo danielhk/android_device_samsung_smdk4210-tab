@@ -56,6 +56,10 @@ PRODUCT_PROPERTY_OVERRIDES += \
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/etc/01PCdefaults:system/etc/init.d/01PCdefaults
 
+# Fix Gapps permissions
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/configs/etc/80ApkPermissions:system/etc/init.d/80ApkPermissions
+
 # Netflix hack
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/configs/etc/98netflix:system/etc/init.d/98netflix
