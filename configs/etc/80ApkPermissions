@@ -1,0 +1,49 @@
+#!/system/bin/sh
+#  by daniel_hk (daniel.p6800@gmail.com)
+
+LOG_TAG="ApkPermissions"
+GOOGLE_PLAY_SERVICE=com.google.android.gms
+SETUPWIZARD=com.google.android.setupwizard
+
+logi ()
+{
+  /system/bin/log -t ${LOG_TAG} -p i ": $@"
+}
+
+loge ()
+{
+  /system/bin/log -t ${LOG_TAG} -p e ": $@"
+}
+
+failed ()
+{
+  loge "$1: exit code $2"
+  exit $2
+}
+
+grant_permission ()
+{
+  pm grant $1 $2
+
+  case $? in
+    0) logi "$1 granted $2";;
+    *) failed "error" $?;;
+  esac
+}
+
+# Google SetupWizard indicate Gapps installed
+GAPPS=`pm list packages com.google.android`
+GAPPS_EXIST=`echo ${GAPPS} | grep 'setupwizard'`
+
+if [ -z "${GAPPS_EXIST}" ];
+then
+  logi "Gapps not insalled"
+else
+  grant_permission ${SETUPWIZARD} android.permission.READ_PHONE_STATE
+
+  # Google Play Service
+  grant_permission ${GOOGLE_PLAY_SERVICE} android.permission.ACCESS_FINE_LOCATION 
+  grant_permission ${GOOGLE_PLAY_SERVICE} android.permission.ACCESS_COARSE_LOCATION
+fi
+
+exit 0
