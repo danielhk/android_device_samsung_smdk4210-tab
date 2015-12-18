@@ -58,7 +58,7 @@ PRODUCT_COPY_FILES += \
 
 # Fix Gapps permissions
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/etc/80ApkPermissions:system/etc/init.d/80ApkPermissions
+    $(LOCAL_PATH)/configs/etc/99zApkPermissions:system/etc/init.d/99zApkPermissions
 
 # Netflix hack
 PRODUCT_COPY_FILES += \
