@@ -95,6 +95,7 @@ PRODUCT_PACKAGES += \
     lights.exynos4 \
     libhwconverter \
     libs5pjpeg \
+    libstlport \
     libfimg \
     libnetcmdiface \
     consumerir.exynos4
