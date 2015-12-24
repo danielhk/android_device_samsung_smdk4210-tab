@@ -40,12 +40,16 @@
 
 #include "exynos_camera.h"
 
-void buffer_dump(void* p, int ln)
+#define DEBUG	0
+
+#if DEBUG
+// helper function for debug
+void buffer_dump(void* p, int lines)
 {
 	unsigned char *b = (unsigned char *) p;
 	int i, j;
 	char c[16];
-	for (i=0;i<ln;i++) {
+	for (i=0;i<lines;i++) {
 		j=0;
 		while (j < 16) {
 			c[j] = b[(i<<4)+j];
@@ -55,7 +59,7 @@ void buffer_dump(void* p, int ln)
 		  c[0],c[1],c[2],c[3],c[4],c[5],c[6],c[7],c[8],c[9],c[10],c[11],c[12],c[13],c[14],c[15]);
 	}
 }
-
+#endif
 /*
  * Devices configurations
  */
@@ -76,11 +80,10 @@ struct exynos_camera_preset exynos_camera_presets_galaxytab[] = {
 		.params = {
 #ifdef TAB_P2
 			.preview_size_values = "1280x720,1024x768,1024x552,800x600,720x480,640x480,528x432,352x288,320x240,176x144",
-			.preview_size = "528x432",
 #else
 			.preview_size_values = "1280x720,1024x768,1024x576,800x600,720x480,640x480,528x432,352x288,320x240,176x144",
-			.preview_size = "640x480",
 #endif
+			.preview_size = "640x480",
 			.preview_format_values = "yuv420sp,yuv420p,rgb565",
 			.preview_format = "yuv420sp",
 			.preview_frame_rate_values = "30,25,20,15,10,7",
@@ -142,7 +145,11 @@ struct exynos_camera_preset exynos_camera_presets_galaxytab[] = {
 		},
 	},
 	{
+#ifdef TAB_P2
+		.name = "SR200PC20",
+#else
 		.name = "S5K5BAFX",
+#endif
 		.facing = CAMERA_FACING_FRONT,
 		.orientation = 0,
 		.rotation = 0,
@@ -1367,8 +1374,14 @@ int exynos_camera_picture(struct exynos_camera *camera)
 	}
 
 	data_size = exif_size + picture_size;
+#if DEBUG
 	ALOGD("%s: after exif_create jpeg_thumbnail_size:%d, exif_size:%d, picture_size:%d",
 		 __func__, jpeg_thumbnail_size, exif_size, picture_size);
+	ALOGD("%s: EXIF data:", __func__)
+	buffer_dump(exif_data_memory->data, 30); // dump first 30*16 bytes of the EXIF data to log
+	ALOGD("%s: JPEG image:", __func__)
+	buffer_dump(picture_data_memory->data, 30);// dump first 30*16 bytes of the JPEG image to log
+#endif
 	if (camera->callbacks.request_memory != NULL) {
 		data_memory =
 			camera->callbacks.request_memory(-1,
@@ -1388,12 +1401,10 @@ int exynos_camera_picture(struct exynos_camera *camera)
 	// Copy the EXIF data
 	memcpy((void *) ((int) data_memory->data + 2), exif_data_memory->data,
 		exif_size);
-//	daniel_dump(exif_data_memory->data, 30);
 
 	// Copy the JPEG picture
 	memcpy((void *) ((int) data_memory->data + 2 + exif_size),
 		(void *) ((int) picture_data_memory->data + 2), picture_size - 2);
-//	daniel_dump(data_memory->data, 30);
 
 	// Callbacks
 
@@ -1494,8 +1505,9 @@ int exynos_camera_picture_start(struct exynos_camera *camera)
 	if (camera == NULL)
 		return -EINVAL;
 
-	// Stop preview thread
-	exynos_camera_preview_stop(camera);
+	// Stop preview thread if enabled
+	if (camera->preview_enabled)
+		exynos_camera_preview_stop(camera);
 
 	width = camera->picture_width;
 	height = camera->picture_height;
@@ -2002,7 +2014,7 @@ int exynos_camera_preview_start(struct exynos_camera *camera)
 	}
 
 	camera->preview_buffers_count = rc;
-	ALOGD("Found %d preview buffers available!", camera->preview_buffers_count);
+	ALOGD("Found %d preview buffers available!", rc);
 
 	fps = camera->preview_fps;
 	memset(&streamparm, 0, sizeof(streamparm));
@@ -2032,6 +2044,7 @@ int exynos_camera_preview_start(struct exynos_camera *camera)
 	frame_size = rc;
 	camera->preview_frame_size = frame_size;
 
+	ALOGD("%s: preview frame_size=%d fps=%d", __func__, frame_size, fps);
 	if (camera->callbacks.request_memory != NULL) {
 		fd = exynos_v4l2_find_fd(camera, 0);
 		if (fd < 0) {
@@ -2617,7 +2630,8 @@ int exynos_camera_cancel_auto_focus(struct camera_device *dev)
 
 	camera = (struct exynos_camera *) dev->priv;
 
-	exynos_camera_auto_focus_stop(camera);
+	if (camera->auto_focus_enabled)
+		exynos_camera_auto_focus_stop(camera);
 
 	return 0;
 }
@@ -2647,7 +2661,8 @@ int exynos_camera_cancel_picture(struct camera_device *dev)
 
 	camera = (struct exynos_camera *) dev->priv;
 
-	exynos_camera_picture_stop(camera);
+	if (camera->picture_enabled)
+		exynos_camera_picture_stop(camera);
 
 	return 0;
 }
