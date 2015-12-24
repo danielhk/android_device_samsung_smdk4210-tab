@@ -29,7 +29,7 @@ LOCAL_C_INCLUDES := \
 	hardware/samsung/exynos4/hal/include \
 	system/media/camera/include
 
-ifeq ($(TARGET_SCREEN_WIDTH), 1024)
+ifeq ($(TARGET_IS_TAB_P2), true)
   LOCAL_CFLAGS += -DTAB_P2=1
 endif
 
