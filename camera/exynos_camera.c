@@ -80,11 +80,10 @@ struct exynos_camera_preset exynos_camera_presets_galaxytab[] = {
 		.params = {
 #ifdef TAB_P2
 			.preview_size_values = "1280x720,1024x768,1024x552,800x600,720x480,640x480,528x432,352x288,320x240,176x144",
-			.preview_size = "528x432",
 #else
 			.preview_size_values = "1280x720,1024x768,1024x576,800x600,720x480,640x480,528x432,352x288,320x240,176x144",
-			.preview_size = "640x480",
 #endif
+			.preview_size = "640x480",
 			.preview_format_values = "yuv420sp,yuv420p,rgb565",
 			.preview_format = "yuv420sp",
 			.preview_frame_rate_values = "30,25,20,15,10,7",
@@ -146,7 +145,11 @@ struct exynos_camera_preset exynos_camera_presets_galaxytab[] = {
 		},
 	},
 	{
+#ifdef TAB_P2
+		.name = "SR200PC20",
+#else
 		.name = "S5K5BAFX",
+#endif
 		.facing = CAMERA_FACING_FRONT,
 		.orientation = 0,
 		.rotation = 0,
@@ -1502,8 +1505,9 @@ int exynos_camera_picture_start(struct exynos_camera *camera)
 	if (camera == NULL)
 		return -EINVAL;
 
-	// Stop preview thread
-	exynos_camera_preview_stop(camera);
+	// Stop preview thread if enabled
+	if (camera->preview_enabled)
+		exynos_camera_preview_stop(camera);
 
 	width = camera->picture_width;
 	height = camera->picture_height;
@@ -2010,7 +2014,7 @@ int exynos_camera_preview_start(struct exynos_camera *camera)
 	}
 
 	camera->preview_buffers_count = rc;
-	ALOGD("Found %d preview buffers available!", camera->preview_buffers_count);
+	ALOGD("Found %d preview buffers available!", rc);
 
 	fps = camera->preview_fps;
 	memset(&streamparm, 0, sizeof(streamparm));
@@ -2040,6 +2044,7 @@ int exynos_camera_preview_start(struct exynos_camera *camera)
 	frame_size = rc;
 	camera->preview_frame_size = frame_size;
 
+	ALOGD("%s: preview frame_size=%d fps=%d", __func__, frame_size, fps);
 	if (camera->callbacks.request_memory != NULL) {
 		fd = exynos_v4l2_find_fd(camera, 0);
 		if (fd < 0) {
@@ -2625,7 +2630,8 @@ int exynos_camera_cancel_auto_focus(struct camera_device *dev)
 
 	camera = (struct exynos_camera *) dev->priv;
 
-	exynos_camera_auto_focus_stop(camera);
+	if (camera->auto_focus_enabled)
+		exynos_camera_auto_focus_stop(camera);
 
 	return 0;
 }
@@ -2655,7 +2661,8 @@ int exynos_camera_cancel_picture(struct camera_device *dev)
 
 	camera = (struct exynos_camera *) dev->priv;
 
-	exynos_camera_picture_stop(camera);
+	if (camera->picture_enabled)
+		exynos_camera_picture_stop(camera);
 
 	return 0;
 }
