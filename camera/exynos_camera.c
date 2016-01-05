@@ -40,9 +40,9 @@
 
 #include "exynos_camera.h"
 
-#define DEBUG	0
+#define CAM_HAL_DEBUG	0
 
-#if DEBUG
+#if CAM_HAL_DEBUG
 // helper function for debug
 void buffer_dump(void* p, int lines)
 {
@@ -79,7 +79,7 @@ struct exynos_camera_preset exynos_camera_presets_galaxytab[] = {
 		.metering = METERING_CENTER,
 		.params = {
 #ifdef TAB_P2
-			.preview_size_values = "1280x720,1024x768,1024x552,800x600,720x480,640x480,528x432,352x288,320x240,176x144",
+			.preview_size_values = "720x480,640x480,528x432,352x288,320x240,176x144",
 #else
 			.preview_size_values = "1280x720,1024x768,1024x576,800x600,720x480,640x480,528x432,352x288,320x240,176x144",
 #endif
@@ -98,9 +98,15 @@ struct exynos_camera_preset exynos_camera_presets_galaxytab[] = {
 			.picture_size = "2048x1536",
 			.picture_format_values = "jpeg",
 			.picture_format = "jpeg",
+#ifdef TAB_P2
+			.jpeg_thumbnail_size_values = "320x240,160x120,0x0",
+			.jpeg_thumbnail_width = 160,
+			.jpeg_thumbnail_height = 120,
+#else
 			.jpeg_thumbnail_size_values = "400x300,320x240,0x0",
 			.jpeg_thumbnail_width = 320,
 			.jpeg_thumbnail_height = 240,
+#endif
 			.jpeg_thumbnail_quality = 100,
 			.jpeg_quality = 90,
 
@@ -313,7 +319,7 @@ int exynos_camera_init(struct exynos_camera *camera, int id)
 
 	rc = exynos_v4l2_g_ext_ctrls(camera, 0, (struct v4l2_ext_control *) &control, 1);
 	if (rc < 0) {
-		ALOGE("%s: g ext ctrls failed", __func__);
+		ALOGE("%s: Get firmware version: g ext ctrls failed", __func__);
 	} else {
 		ALOGD("Firmware version: %s", firmware_version);
 	}
@@ -990,11 +996,11 @@ int exynos_camera_params_apply(struct exynos_camera *camera)
 				ALOGE("%s: s ctrl failed!", __func__);
 		}
 	}
-
+#if CAM_HAL_DEBUG
 	ALOGD("%s: Preview size: %dx%d, picture size: %dx%d, recording size: %dx%d",
 		__func__, preview_width, preview_height, picture_width, picture_height,
 		recording_width, recording_height);
-
+#endif
 	return 0;
 }
 
@@ -1122,7 +1128,7 @@ int exynos_camera_picture(struct exynos_camera *camera)
 				camera->callbacks.request_memory(-1,
 					jpeg_thumbnail_size, 1, 0);
 			if (jpeg_thumbnail_data_memory == NULL) {
-				ALOGE("%s: thumb memory request failed!", __func__);
+				ALOGE("%s: thumbnail memory request failed!", __func__);
 				goto error;
 			}
 		} else {
@@ -1168,9 +1174,6 @@ int exynos_camera_picture(struct exynos_camera *camera)
 		jpeg_enc_params.height = jpeg_thumbnail_height;
 		jpeg_enc_params.in_fmt = jpeg_in_format;
 		jpeg_enc_params.out_fmt = jpeg_out_format;
-
-		ALOGD("%s: thumbnail: jpeg_thumbnail_width: %d, jpeg_thumbnail_height: %d, jpeg_in_format: %d, jpeg_out_format: %d",
-			__func__, jpeg_thumbnail_width, jpeg_thumbnail_height, jpeg_in_format, jpeg_out_format);
 
 		if (jpeg_thumbnail_quality >= 90)
 			jpeg_enc_params.quality = QUALITY_LEVEL_1;
@@ -1233,7 +1236,14 @@ int exynos_camera_picture(struct exynos_camera *camera)
 		jpeg_thumbnail_size = jpeg_out_size;
 
 		api_jpeg_encode_deinit(jpeg_fd);
+
+		ALOGD("%s: cam_pic_fmt != FMT_JPEG,thumbnail: jpeg_in_format=%d, jpeg_out_format=%d",
+			__func__, jpeg_in_format, jpeg_out_format);
+
 	}
+
+	ALOGD("%s: thumbnail: jpeg_thumbnail_addr=%p, jpeg_thumbnail_width=%d, jpeg_thumbnail_height=%d",
+		__func__, jpeg_thumbnail_addr, jpeg_thumbnail_width, jpeg_thumbnail_height);
 
 	// Picture
 
@@ -1289,10 +1299,10 @@ int exynos_camera_picture(struct exynos_camera *camera)
 		jpeg_enc_params.height = picture_height;
 		jpeg_enc_params.in_fmt = jpeg_in_format;
 		jpeg_enc_params.out_fmt = jpeg_out_format;
-
+#if CAM_HAL_DEBUG
 		ALOGD("%s: Picture: picture_width: %d, picture_height: %d, jpeg_in_format: %d, jpeg_out_format: %d",
 			__func__, picture_width, picture_height, jpeg_in_format, jpeg_out_format);
-
+#endif
 		if (jpeg_quality >= 90)
 			jpeg_enc_params.quality = QUALITY_LEVEL_1;
 		else if (jpeg_quality >= 80)
@@ -1328,10 +1338,10 @@ int exynos_camera_picture(struct exynos_camera *camera)
 		}
 
 		jpeg_out_size = jpeg_enc_params.size;
-
+#if CAM_HAL_DEBUG
 		ALOGD("%s: After Encode: jpeg_enc_params.width: %d, jpeg_enc_params.height: %d, jpeg_out_size: %d",
 			__func__, jpeg_enc_params.width, jpeg_enc_params.height, jpeg_out_size);
-
+#endif
 		if (jpeg_out_size <= 0) {
 			ALOGE("%s: Failed to get JPEG out size", __func__);
 			api_jpeg_encode_deinit(jpeg_fd);
@@ -1374,7 +1384,7 @@ int exynos_camera_picture(struct exynos_camera *camera)
 	}
 
 	data_size = exif_size + picture_size;
-#if DEBUG
+#if CAM_HAL_DEBUG
 	ALOGD("%s: after exif_create jpeg_thumbnail_size:%d, exif_size:%d, picture_size:%d",
 		 __func__, jpeg_thumbnail_size, exif_size, picture_size);
 	ALOGD("%s: EXIF data:", __func__)
@@ -2524,7 +2534,8 @@ void exynos_camera_stop_preview(struct camera_device *dev)
 
 	camera = (struct exynos_camera *) dev->priv;
 
-	exynos_camera_preview_stop(camera);
+	if (camera->preview_enabled)
+		exynos_camera_preview_stop(camera);
 }
 
 int exynos_camera_preview_enabled(struct camera_device *dev)
