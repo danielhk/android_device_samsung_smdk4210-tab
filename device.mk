@@ -126,6 +126,8 @@ PRODUCT_PACKAGES += \
 
 # Filesystem management tools
 PRODUCT_PACKAGES += \
+    fsck.f2fs \
+    mkfs.f2fs \
     make_ext4fs \
     setup_fs \
 
