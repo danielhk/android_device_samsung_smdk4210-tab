@@ -81,7 +81,7 @@ struct exynos_camera_preset exynos_camera_presets_galaxytab[] = {
 #ifdef TAB_P2
 			.preview_size_values = "720x480,640x480,528x432,352x288,320x240,176x144",
 #else
-			.preview_size_values = "1280x720,1024x768,1024x576,800x600,720x480,640x480,528x432,352x288,320x240,176x144",
+			.preview_size_values = "1024x768,1024x576,800x600,720x480,640x480,528x432,352x288,320x240,176x144",
 #endif
 			.preview_size = "640x480",
 			.preview_format_values = "yuv420sp,yuv420p,rgb565",
@@ -1236,15 +1236,15 @@ int exynos_camera_picture(struct exynos_camera *camera)
 		jpeg_thumbnail_size = jpeg_out_size;
 
 		api_jpeg_encode_deinit(jpeg_fd);
-
+#if CAM_HAL_DEBUG
 		ALOGD("%s: cam_pic_fmt != FMT_JPEG,thumbnail: jpeg_in_format=%d, jpeg_out_format=%d",
 			__func__, jpeg_in_format, jpeg_out_format);
-
+#endif
 	}
-
+#if CAM_HAL_DEBUG
 	ALOGD("%s: thumbnail: jpeg_thumbnail_addr=%p, jpeg_thumbnail_width=%d, jpeg_thumbnail_height=%d",
 		__func__, jpeg_thumbnail_addr, jpeg_thumbnail_width, jpeg_thumbnail_height);
-
+#endif
 	// Picture
 
 	if (camera_picture_format == V4L2_PIX_FMT_JPEG && picture_addr != NULL && picture_size >= 0) {
@@ -1999,7 +1999,9 @@ int exynos_camera_preview_start(struct exynos_camera *camera)
 	width = camera->preview_width;
 	height = camera->preview_height;
 	format_bpp = camera->preview_format_bpp;
-
+#if CAM_HAL_DEBUG
+	ALOGD("%s: width=%d,heidht=%d,format=%d", __func__,width, height, format);
+#endif
 	rc = exynos_v4l2_s_fmt_pix_cap(camera, 0, width, height, format, V4L2_PIX_FMT_MODE_PREVIEW);
 	if (rc < 0) {
 		ALOGE("%s: s fmt failed!", __func__);
