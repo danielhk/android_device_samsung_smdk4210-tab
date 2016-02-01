@@ -53,7 +53,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 
 # PerformanceControl defaults
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/configs/etc/01PCdefaults:system/etc/init.d/01PCdefaults
+    $(LOCAL_PATH)/configs/etc/00PCdefaults:system/etc/init.d/00PCdefaults
 
 # Fix Gapps permissions
 PRODUCT_COPY_FILES += \
