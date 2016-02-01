@@ -32,8 +32,7 @@ grant_permission ()
 }
 
 # Google SetupWizard indicate Gapps installed
-GAPPS=`pm list packages com.google.android`
-GAPPS_EXIST=`echo ${GAPPS} | grep 'setupwizard'`
+GAPPS_EXIST=`pm list packages com.google.android | grep 'setupwizard'`
 
 if [ -z "${GAPPS_EXIST}" ];
 then
