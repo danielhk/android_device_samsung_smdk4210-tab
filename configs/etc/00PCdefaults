@@ -1,0 +1,51 @@
+#!/system/bin/sh
+#  by daniel_hk (daniel.p6800@gmail.com)
+
+LOG_TAG="PC_DEFAULT"
+####################### Value and Path #######################
+MALI_VPLL_PATH=/sys/module/mali/parameters/mali_use_vpll
+MALI_VPLL_VAL=0
+DT_WAKE_PATH=/sys/android_touch/doubletap_wake
+DT_WAKE_VAL=-1
+DT_DELTA_PATH=/sys/android_touch/dt_delta_limit
+DT_DELTA_VAL=-1
+DT_TIMEOUT_PATH=/sys/android_touch/dt_timeout
+DT_TIMEOUT_VAL=-1
+##############################################################
+logi ()
+{
+  /system/bin/log -t ${LOG_TAG} -p i ": $@"
+}
+
+loge ()
+{
+  /system/bin/log -t ${LOG_TAG} -p e ": $@"
+}
+
+failed ()
+{
+  loge "$1: exit code $2"
+  exit $2
+}
+
+write_val()
+{
+  if [ $1 -gt 0 ]
+  then
+    echo $1 > $2
+  fi
+}
+
+# vpll on/off
+#write_val ${MALI_VPLL_VAL} ${MALI_VPL_PATH}
+write_val ${DT_WAKE_VAL} ${DT_WAKE_PATH}
+write_val ${DT_DELTA_VAL} ${DT_DELTA_PATH}
+write_val ${DT_TIMEOUT_VAL} ${DT_TIMEOUT_PATH}
+
+case $? in
+  0) logi "Set PerformanceControl defaults....done";;
+  *) failed "error" $?;
+     exit $?;;
+esac
+
+exit 0
