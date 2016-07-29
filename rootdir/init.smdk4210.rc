@@ -137,6 +137,14 @@ on post-fs-data
     # touchscreen
     chown system system /sys/class/sec/sec_touchscreen/tsp_threshold
 
+    # Double tap to wake settings
+    chown system system /sys/android_touch/doubletap_wake
+    chmod 0664		/sys/android_touch/doubletap_wake
+    chown system system /sys/android_touch/dt_delta_limit
+    chmod 0664		/sys/android_touch/dt_delta_limit
+    chown system system /sys/android_touch/dt_timeout
+    chmod 0664		/sys/android_touch/dt_timeout
+
     # device encryption
     setprop vold.post_fs_data_done 1
 
