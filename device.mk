@@ -98,6 +98,7 @@ PRODUCT_PACKAGES += \
     libstlport \
     libfimg \
     libnetcmdiface \
+    power.exynos4 \
     consumerir.exynos4
 
 # Charger
