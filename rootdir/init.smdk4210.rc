@@ -14,7 +14,8 @@ on init
 
 on fs
     mount_all /fstab.smdk4210
-    setprop ro.crypto.fuse_sdcard true
+
+    #setprop ro.crypto.fuse_sdcard true
 
     # we will remap this as /mnt/sdcard with the sdcard fuse tool
     #mkdir /data/media 0775 media_rw media_rw
@@ -142,9 +143,6 @@ on post-fs-data
 on boot
     mount debugfs /sys/kernel/debug /sys/kernel/debug
 
-    # Device Encryption by B2B Security Lab.
-    setprop ro.crypto.keyfile.userdata /efs/metadata
-
 # For version 7 RIL blob
 service cpboot-daemon /sbin/cbd -d -p 8
     class main
@@ -170,7 +168,7 @@ service p2p_supplicant /system/bin/wpa_supplicant \
     -ip2p0 -Dnl80211 -c/data/misc/wifi/p2p_supplicant.conf \
     -I/system/etc/wifi/p2p_supplicant.conf -N \
     -iwlan0 -Dnl80211 -c/data/misc/wifi/wpa_supplicant.conf \
-    -I/system/etc/wifi/p2p_supplicant.conf \
+    -I/system/etc/wifi/wpa_supplicant.conf \
     -O/data/misc/wifi/sockets -puse_p2p_group_interface=1 \
     -e/data/misc/wifi/entropy.bin -g@android:wpa_wlan0
     #   we will start as root and wpa_supplicant will switch to user wifi
@@ -242,4 +240,3 @@ service gpsd /system/bin/gpsd -c /system/etc/gps.xml
 #    group graphics
 #on property:ro.tvout.enable=false
 #    stop TvoutService_C
-

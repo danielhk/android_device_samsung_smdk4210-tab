@@ -146,9 +146,6 @@ on post-fs-data
 on boot
     mount debugfs /sys/kernel/debug /sys/kernel/debug
 
-    # Device Encryption by B2B Security Lab.
-    setprop ro.crypto.keyfile.userdata /efs/metadata
-
 # fake some battery state
     setprop status.battery.state Slow
     setprop status.battery.level 5
@@ -174,7 +171,7 @@ service p2p_supplicant /system/bin/wpa_supplicant \
     -ip2p0 -Dnl80211 -c/data/misc/wifi/p2p_supplicant.conf \
     -I/system/etc/wifi/p2p_supplicant.conf -N \
     -iwlan0 -Dnl80211 -c/data/misc/wifi/wpa_supplicant.conf \
-    -I/system/etc/wifi/p2p_supplicant.conf \
+    -I/system/etc/wifi/wpa_supplicant.conf \
     -O/data/misc/wifi/sockets -puse_p2p_group_interface=1 \
     -e/data/misc/wifi/entropy.bin -g@android:wpa_wlan0
     #   we will start as root and wpa_supplicant will switch to user wifi
